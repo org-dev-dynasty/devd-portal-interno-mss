@@ -11,11 +11,11 @@ export class GetAllProjectsController {
 
     async handle(req: Request, res: Response) {
         try {
-            const userFromToken = req.user as UserFromToken;
+            // const userFromToken = req.user as UserFromToken;
 
-            if (!userFromToken) {
-                return res.status(401).json({ message: "Unauthorized" });
-            }
+            // if (!userFromToken) {
+            //     return res.status(401).json({ message: "Unauthorized" });
+            // }
 
             const projects = await this.usecase.execute();
             const viewmodel = new GetAllProjectsViewmodel(projects);
