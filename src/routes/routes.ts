@@ -2,10 +2,9 @@ import { Express, Request, Response } from "express";
 import CreateUserPresenter from "../modules/create_user/app/create_user_presenter";
 import AuthUserPresenter from "../modules/auth_user/app/auth_user_presenter";
 import GetAllUsersPresenter from "../modules/get_all_user/app/get_all_users_presenter";
+import GetUserByIdPresenter from "../modules/get_user_by_id/app/get_user_by_id_presenter";
 import CreateProjectPresenter from "../modules/create_project/app/create_project_presenter";
 
-import app from "../app";
-import { GetAllUsersController } from "../modules/get_all_user/app/get_all_users_controller";
 
 const routes = (app: Express) => {
   app
@@ -18,6 +17,7 @@ const routes = (app: Express) => {
   app.use("/api", CreateUserPresenter);
   app.use("/api", AuthUserPresenter);
   app.use("/api", GetAllUsersPresenter);
+  app.use("/api", GetUserByIdPresenter)
 
   // project routes
   app.use("/api", CreateProjectPresenter);
