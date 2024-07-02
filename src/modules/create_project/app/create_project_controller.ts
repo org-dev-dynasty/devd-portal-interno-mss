@@ -1,14 +1,17 @@
 // Conteúdo do arquivo...
-import { BadRequest, Forbidden, InternalServerError } from "http-errors";
-import { ProjectProps } from "../../../shared/domain/entities/project";
-import { MissingParameters } from "../../../shared/helpers/errors/controller_errors";
-import { CreateProjectUsecase } from "./create_project_usecase";
 import { Request, Response } from "express";
+import { ProjectProps } from "../../../shared/domain/entities/project";
+import { CreateProjectViewModel } from "../../../modules/create_project/app/create_project_viewmodel";
+import { CreateProjectUsecase } from "./create_project_usecase";
+import { BadRequest, Forbidden, InternalServerError } from "http-errors";
+import { InvalidParameter, InvalidRequest, MissingParameters } from "../../../shared/helpers/errors/controller_errors";
+import { ParameterError } from "../../../shared/helpers/http/http_codes";
+import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 
 
 
 export class CreateProjectController {
-    constructor(private createProjectUsecase: CreateProjectUsecase) {
+    constructor(private usecase: CreateProjectUsecase) {
     }
 
     async createProject(req: Request, res: Response) {
@@ -39,17 +42,24 @@ export class CreateProjectController {
                 projectStatus,
                 projectDescription,
             };
-            await this.createProjectUsecase.execute(projectProps);
+            await this.usecase.execute(projectProps);
+            const viewmodel = new CreateProjectViewModel("Project created successfully");
+            return res.status(201).json(viewmodel);
 
         } catch (error: any) {
-            if (
-                error instanceof BadRequest ||
-                error instanceof Forbidden ||
-                error instanceof InternalServerError
-            ) {
-                return res.status(error.status).json(error);
+            if (error instanceof InvalidRequest) {
+              return new BadRequest(error.message).send(res);
             }
-            return res.status(500).json(new InternalServerError(error.message));
-        }
+            if (error instanceof InvalidParameter) {
+              return new ParameterError(error.message).send(res);
+            }
+            if (error instanceof EntityError) {
+              return new ParameterError(error.message).send(res);
+            }
+            if (error instanceof Forbidden) {
+              return new Forbidden(error.getMessage()).send(res);
+            }
+            return new InternalServerError('Internal Server Error').send(res);
+          }
     }
 }
