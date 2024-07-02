@@ -3,38 +3,24 @@ import { Project, ProjectProps } from "../../domain/entities/project";
 import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
 import { toEnum } from "../../domain/enums/status_enum";
 
-
-
 const prisma = new PrismaClient();
 
 export class ProjectRepositoryPrisma implements IProjectRepository {
 
     async createProject(projectProps: ProjectProps): Promise<Project> {
         try {
-            console.log("Criando novo projeto:", projectProps);
-    
-            const existingProject = await prisma.project.findUnique({
-                where: {
-                    projectId: projectProps.projectId
-                },
-            });
-    
-            if (!existingProject) {
-                throw new Error("Project already exists in the database.");
-            }
-    
             const createdProjectFromPrisma = await prisma.project.create({
                 data: {
-                    projectName: projectProps.projectName,
-                    projectStatus: projectProps.projectStatus,
-                    projectDescription: projectProps.projectDescription || '',
+                    name: projectProps.projectName,
+                    status: projectProps.projectStatus,
+                    description: projectProps.projectDescription || '',
                 },
             });
     
             const createdProject = new Project({
-                projectName: createdProjectFromPrisma.projectName,
-                projectStatus: toEnum(createdProjectFromPrisma.projectStatus),
-                projectDescription: createdProjectFromPrisma.projectDescription,
+                projectName: createdProjectFromPrisma.name,
+                projectStatus: toEnum(createdProjectFromPrisma.status),
+                projectDescription: createdProjectFromPrisma.description,
             });
     
             return createdProject;
