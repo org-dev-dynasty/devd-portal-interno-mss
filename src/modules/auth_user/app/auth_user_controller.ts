@@ -17,19 +17,21 @@ export class AuthUserController {
       }
 
       const user = await this.usecase.execute(email, password);
-
+      console.log("Ate aqui ta ok chefe")
       const token = jwt.sign(
-        { id: user.userId, email: user.email, role: user.role, status: user.status },
+        { user_id: user.userId, email: user.email, status: user.status },
         process.env.JWT_SECRET as string,
         { expiresIn: "24h" }
       );
-
+      console.log("Aqui ta ok chefe 2")
       res.status(200).json({ token });
     } catch (error: any) {
       if (error instanceof NoItemsFound || error instanceof EntityError) {
         return new ParameterError(error.message).send(res);
       }
+      console.log("xabu aqui")
       return new InternalServerError(error.message).send(res);
+
     }
   }
 }
