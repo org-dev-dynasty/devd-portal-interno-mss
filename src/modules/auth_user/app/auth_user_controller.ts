@@ -1,5 +1,5 @@
-import { AuthUserUsecase } from "./auth_user_usecase";
 import { Request, Response } from "express";
+import { AuthUserUsecase } from "./auth_user_usecase";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
 import { BadRequest, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
