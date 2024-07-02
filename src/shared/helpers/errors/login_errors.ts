@@ -6,8 +6,4 @@ export class PasswordDoesNotMatchError extends BaseError {
   }
 }
 
-export class FirstAccessAlreadyDoneError extends BaseError {
-  constructor() {
-    super("First access already done");
-  }
-}
+
