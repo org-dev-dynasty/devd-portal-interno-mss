@@ -11,6 +11,6 @@ const projectRepository = new ProjectRepositoryPrisma();
 const getAllProjectsUsecase = new GetAllProjectsUsecase(projectRepository);
 const getAllProjectsController = new GetAllProjectsController(getAllProjectsUsecase);
 
-router.get("/get-all-projects", authenticateToken, async (req: Request, res: Response) =>  await    getAllProjectsController.handle(req, res));
+router.get("/get-all-projects", async (req: Request, res: Response) =>  await getAllProjectsController.handle(req, res));
 
 export default router;
