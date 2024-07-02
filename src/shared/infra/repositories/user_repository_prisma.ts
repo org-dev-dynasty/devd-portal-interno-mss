@@ -29,7 +29,7 @@ export class UserRepositoryPrisma implements IUserRepository {
           name: userProps.name,
           email: userProps.email,
           password: hashedPassword,
-          status: userProps.status as string,
+          status: userProps.status  
         },
       });
 
