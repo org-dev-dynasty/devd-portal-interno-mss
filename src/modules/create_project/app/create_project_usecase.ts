@@ -1,6 +1,7 @@
 // Conteúdo do arquivo...
 import { ProjectProps } from "../../../shared/domain/entities/project";
 import { IProjectRepository } from "../../../shared/domain/repositories/project_repository_interface";
+import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 
 
 export class CreateProjectUsecase {
@@ -9,15 +10,14 @@ export class CreateProjectUsecase {
 
     async execute(projectProps: ProjectProps) {
         if (!projectProps.projectName) {
-            throw new Error("Missing project name");
+            throw new EntityError("project name");
         }
         if (!projectProps.projectStatus) {
-            throw new Error("Missing project status");
+            throw new EntityError("Missing project status");
         }
         if (!projectProps.projectDescription) {
-            throw new Error("Missing project description");
+            throw new EntityError("Missing project description");
         }
-
         const newProject = await this.repo.createProject(projectProps);
         return newProject;
     }
