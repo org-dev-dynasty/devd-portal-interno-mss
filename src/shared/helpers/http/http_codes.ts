@@ -36,6 +36,12 @@ export class Created extends HttpResponse {
     }
 }
 
+export class NoContent extends HttpResponse {
+    constructor(message: string) {
+        super(204, null, message);
+    }
+}
+
 export class BadRequest extends HttpResponse {
     constructor(message: string) {
         super(400, null, message);
