@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { GetUserByEmailUseCase } from "./get_user_by_email_usecase";
-import { UserFromToken } from "../../../../shared/middlewares/jwt_middleware"; 
+import { UserFromToken } from "../../../../src/shared/middlewares/jwt_middleware"; 
 import { GetUserByEmailViewmodel } from "./get_user_by_email_viewmodel"; 
 
 export class GetUserByEmailController {
