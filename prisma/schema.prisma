@@ -95,7 +95,7 @@ model Responsible {
 model User {
   user_id       String        @id @default(uuid())
   name          String
-  email         String
+  email         String        @unique
   password      String
   status        String
   created_at    DateTime      @default(now())
