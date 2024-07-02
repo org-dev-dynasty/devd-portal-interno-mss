@@ -1,25 +1,25 @@
 import { PrismaClient } from "@prisma/client";
-import { Project, ProjectProps } from "../../domain/entities/project";
+import { Project } from "../../domain/entities/project";
 import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
 import { toEnum } from "../../domain/enums/status_enum";
 
 const prisma = new PrismaClient();
 
 export class ProjectRepositoryPrisma implements IProjectRepository {
-    async createProject(projectProps: ProjectProps): Promise<Project> {
+    async createProject(projectProps: Project): Promise<Project> {
         try {
             const createdProjectFromPrisma = await prisma.project.create({
                 data: {
-                    projectName: projectProps.projectName,
-                    projectStatus: projectProps.projectStatus,
-                    projectDescription: projectProps.projectDescription || '',
+                    name: projectProps.projectName,
+                    status: projectProps.projectStatus,
+                    description: projectProps.projectDescription,
                 },
             });
 
             const createdProject = new Project({
-                projectName: createdProjectFromPrisma.projectName,
-                projectStatus: toEnum(createdProjectFromPrisma.projectStatus),
-                projectDescription: createdProjectFromPrisma.projectDescription,
+                projectName: createdProjectFromPrisma.name,
+                projectStatus: toEnum(createdProjectFromPrisma.status),
+                projectDescription: createdProjectFromPrisma.description,
             });
 
             return createdProject;
@@ -38,9 +38,9 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
 
             const projects = projectsFromPrisma.map((project) => {
                 return new Project({
-                    projectName: project.projectName,
-                    projectStatus: toEnum(project.projectStatus),
-                    projectDescription: project.projectDescription,
+                    projectName: project.name,
+                    projectStatus: toEnum(project.status),
+                    projectDescription: project.description,
                 });
             });
 
