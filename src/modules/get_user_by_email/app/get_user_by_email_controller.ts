@@ -4,14 +4,14 @@ import { UserFromToken } from "../../../../src/shared/middlewares/jwt_middleware
 import { GetUserByEmailViewmodel } from "./get_user_by_email_viewmodel"; 
 
 export class GetUserByEmailController {
-  constructor(private getUserByEmailUseCase: GetUserByEmailUseCase) {}
+  constructor(private usecase: GetUserByEmailUseCase) {}
 
   async handle(req: Request, res: Response) {
     try {
       const userFromToken = req.user as UserFromToken; 
       const email = userFromToken.email; 
 
-      const user = await this.getUserByEmailUseCase.execute(email);
+      const user = await this.usecase.execute(email);
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
