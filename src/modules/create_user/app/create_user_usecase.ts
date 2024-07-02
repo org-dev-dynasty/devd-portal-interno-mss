@@ -1,31 +1,32 @@
 import { User, UserProps } from "../../../shared/domain/entities/user";
 import { IUserRepository } from "../../../shared/domain/repositories/user_repository_interface";
+import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 
 export class CreateUserUsecase {
   constructor(private repo: IUserRepository) {}
 
   async execute(userProps: UserProps) {
     if (!userProps.name) {
-      throw new Error("Missing name");
+      throw new EntityError("Missing name");
     }
     if (!userProps.email) {
-      throw new Error("Missing email");
+      throw new EntityError("Missing email");
     }
     if (!userProps.password) {
-      throw new Error("Missing password");
+      throw new EntityError("Missing password");
     }
     if (!userProps.role) {
-      throw new Error("Missing role");
+      throw new EntityError("Missing role");
     }
     if (!userProps.telefone) {
-      throw new Error("Missing telefone");
+      throw new EntityError("Missing telefone");
     }
     if (!userProps.cpf) {
-      throw new Error("Missing cpf");
+      throw new EntityError("Missing cpf");
     }
 
     if (!userProps.status) {
-      throw new Error("Missing status");
+      throw new EntityError("Missing status");
     }
 
     const newUser = await this.repo.createUser(new User(userProps));
