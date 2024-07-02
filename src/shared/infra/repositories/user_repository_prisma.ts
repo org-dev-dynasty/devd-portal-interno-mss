@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { UserProps } from "../../../shared/domain/entities/user";
 import { IUserRepository } from "../../../shared/domain/repositories/user_repository_interface";
 import { User } from "../../domain/entities/user";
-import { ROLE } from "../../domain/enums/role_enum";
 import bcrypt from "bcrypt";
 import { STATUS } from "../../domain/enums/status_enum";
 
@@ -29,10 +28,7 @@ export class UserRepositoryPrisma implements IUserRepository {
         data: {
           name: userProps.name,
           email: userProps.email,
-          role: userProps.role as string,
           password: hashedPassword,
-          telefone: userProps.telefone || '', 
-          cpf: userProps.cpf || '', 
           status: userProps.status as string,
         },
       });
@@ -40,10 +36,7 @@ export class UserRepositoryPrisma implements IUserRepository {
       const createdUser = new User({
         name: createdUserFromPrisma.name,
         email: createdUserFromPrisma.email,
-        role: createdUserFromPrisma.role as ROLE,
         password: createdUserFromPrisma.password,
-        telefone: createdUserFromPrisma.telefone,
-        cpf: createdUserFromPrisma.cpf,
         status: createdUserFromPrisma.status as STATUS,
       });
 
@@ -72,13 +65,10 @@ export class UserRepositoryPrisma implements IUserRepository {
       }
 
       return new User({
-        id: existingUser.id,
+        id: existingUser.user_id,
         name: existingUser.name,
         email: existingUser.email,
-        role: existingUser.role as ROLE,
         password: existingUser.password,
-        telefone: existingUser.telefone,
-        cpf: existingUser.cpf,
         status: existingUser.status as STATUS,
       });
     } catch (error) {
@@ -91,7 +81,7 @@ export class UserRepositoryPrisma implements IUserRepository {
     try {
       const existingUser = await prisma.user.findUnique({
         where: {
-          id: id,
+          user_id: id,
         },
       });
 
@@ -100,13 +90,10 @@ export class UserRepositoryPrisma implements IUserRepository {
       }
 
       return new User({
-        id: existingUser.id,
+        id: existingUser.user_id,
         name: existingUser.name,
         email: existingUser.email,
-        role: existingUser.role as ROLE,
         password: existingUser.password,
-        telefone: existingUser.telefone,
-        cpf: existingUser.cpf,
         status: existingUser.status as STATUS,
       });
     } catch (error) {
