@@ -6,7 +6,7 @@ export interface ProjectProps {
     projectId?: string;
     projectName: string;
     projectStatus: STATUS;
-    projectDescription?: string;
+    projectDescription: string | null;
 }
 
 export class Project {
@@ -40,7 +40,7 @@ export class Project {
         return this.props.projectStatus;
     }
 
-    get projectDescription(): string | undefined {
+    get projectDescription(): string | null{
         return this.props.projectDescription;
     }
 
