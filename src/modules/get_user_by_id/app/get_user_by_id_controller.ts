@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserFromToken } from "../../../../shared/middlewares/jwt_middleware";
+import { UserFromToken } from "../../../shared/middlewares/jwt_middleware";
 import { getUserByIdUsecase } from "./get_user_by_id_usecase";
 import { GetUserByIdViewmodel } from "./get_user_by_id_viewmodel";
 
