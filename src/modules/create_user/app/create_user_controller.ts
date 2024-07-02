@@ -11,17 +11,17 @@ import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
 
 export class CreateUserController {
-  constructor(private createUserUsecase: CreateUserUsecase) {}
+  constructor(private usecase: CreateUserUsecase) {}
 
   async createUser(req: Request, res: Response) {
     try {
       console.log("TENTANDO CRIAR USUÁRIO");
-      const { name, email, role, password, telefone, cpf, status } = req.body;
+      const { name, email, password, status } = req.body;
 
       const errors = [];
 
-      if (!name) {
-        errors.push(new MissingParameters("Name"));
+      if (!name) {  // se nao tiver nome
+        errors.push(new MissingParameters("Name")); // retorna que esqueceram o nome
       }
 
       if (!email) {
@@ -46,7 +46,7 @@ export class CreateUserController {
         password,
         status,
       };
-      await this.createUserUsecase.execute(userProps);
+      await this.usecase.execute(userProps);
 
       const viewModel = new CreateUserViewModel(
         "Usuário cadastrado com sucesso!"
