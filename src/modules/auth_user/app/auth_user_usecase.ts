@@ -20,18 +20,19 @@ export class AuthUserUsecase {
     if (!password) {
       throw new Error("Missing password");
     }
-
+    console.log('Chamou get')
     const user = await this.repo.getUserByEmail(email);
     if (!user) {
       throw new Error("User not found");
     }
+    console.log('conseguiu achar')
 
     const passwordMatch = await compare(password, user.password);
 
     if (!passwordMatch) {
       throw new PasswordDoesNotMatchError();
     }
-    
+    console.log("user: " + user.email + user.password)
     return user;
   }
 }
