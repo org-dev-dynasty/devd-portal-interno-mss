@@ -2,7 +2,7 @@ import { AuthUserUsecase } from "./auth_user_usecase";
 import { Request, Response } from "express";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
-import { BadRequest, InternalServerError } from "http-errors";
+import { BadRequest, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
 import jwt from "jsonwebtoken";
 
 export class AuthUserController {
@@ -13,7 +13,7 @@ export class AuthUserController {
 
     try {
       if (!email || !password) {
-        throw new BadRequest("Email and password are required");
+        return new BadRequest("Email and password are required").send(res);
       }
 
       const user = await this.usecase.execute(email, password);
@@ -27,9 +27,9 @@ export class AuthUserController {
       res.status(200).json({ token });
     } catch (error: any) {
       if (error instanceof NoItemsFound || error instanceof EntityError) {
-        return res.status(400).json(new BadRequest(error.message));
+        return new ParameterError(error.message).send(res);
       }
-      return res.status(500).json(new InternalServerError(error.message));
+      return new InternalServerError(error.message).send(res);
     }
   }
 }
