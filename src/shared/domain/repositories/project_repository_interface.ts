@@ -6,5 +6,5 @@ export interface IProjectRepository {
     // updateProject(project: Project): Promise<Project>;
     // deleteProject(projectId: string): Promise<void>;
     // getProjectById(projectId: string): Promise<Project | undefined>;
-    // getAllProjects(): Promise<Project[]>;
+    getAllProjects(): Promise<Project[]>;
 }  
