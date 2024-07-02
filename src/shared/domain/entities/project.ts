@@ -36,7 +36,7 @@ export class Project {
         return this.props.projectName;
     }
 
-    get projectStatus(): string {
+    get projectStatus(): STATUS {
         return this.props.projectStatus;
     }
 
