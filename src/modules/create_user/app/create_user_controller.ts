@@ -32,20 +32,8 @@ export class CreateUserController {
         errors.push(new MissingParameters("Password"));
       }
 
-      if (!role) {
-        errors.push(new MissingParameters("Role"));
-      }
-
       if (!status) {
         errors.push(new MissingParameters("Status"));
-      }
-
-      if (!telefone) {
-        errors.push(new MissingParameters("Telefone"));
-      }
-
-      if (!cpf) {
-        errors.push(new MissingParameters("CPF"));
       }
 
       if (errors.length > 0) {
@@ -55,10 +43,7 @@ export class CreateUserController {
       const userProps: UserProps = {
         name,
         email,
-        role,
         password,
-        telefone,
-        cpf,
         status,
       };
       await this.createUserUsecase.execute(userProps);
