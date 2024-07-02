@@ -9,12 +9,7 @@ const routes = (app: Express) => {
     .route("/")
     .get((req: Request, res: Response) => res.status(200).send("Api Portal Interno Dev Dynasty"));
 
-  app
-    .route("/teste")
-    .get((req: Request, res: Response) =>
-      res.status(200).send("Hello, world!")
-    );
-
+  
   // user routes
   app.use("/api", CreateUserPresenter);
   app.use("/api", AuthUserPresenter);
