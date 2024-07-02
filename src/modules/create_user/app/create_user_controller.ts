@@ -1,9 +1,14 @@
 import { Request, Response } from "express";
 import { CreateUserUsecase } from "./create_user_usecase";
-import { BadRequest, Forbidden, InternalServerError } from "http-errors";
 import { UserProps } from "../../../shared/domain/entities/user";
-import { MissingParameters } from "../../../shared/helpers/errors/controller_errors";
+import {
+  InvalidParameter,
+  InvalidRequest,
+  MissingParameters,
+} from "../../../shared/helpers/errors/controller_errors";
 import { CreateUserViewModel } from "./create_user_viewmodel";
+import { EntityError } from "../../../shared/helpers/errors/domain_errors";
+import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
 
 export class CreateUserController {
   constructor(private createUserUsecase: CreateUserUsecase) {}
@@ -11,8 +16,7 @@ export class CreateUserController {
   async createUser(req: Request, res: Response) {
     try {
       console.log("TENTANDO CRIAR USUÁRIO");
-      const { name, email, role, password, telefone, cpf, status } =
-        req.body;
+      const { name, email, role, password, telefone, cpf, status } = req.body;
 
       const errors = [];
 
@@ -31,6 +35,7 @@ export class CreateUserController {
       if (!role) {
         errors.push(new MissingParameters("Role"));
       }
+
       if (!status) {
         errors.push(new MissingParameters("Status"));
       }
@@ -63,14 +68,19 @@ export class CreateUserController {
       );
       res.status(201).json(viewModel);
     } catch (error: any) {
-      if (
-        error instanceof BadRequest ||
-        error instanceof Forbidden ||
-        error instanceof InternalServerError
-      ) {
-        return res.status(error.status).json(error);
+      if (error instanceof InvalidRequest) {
+        return new BadRequest(error.message).send(res);
       }
-      return res.status(500).json(new InternalServerError(error.message));
+      if (error instanceof InvalidParameter) {
+        return new ParameterError(error.message).send(res);
+      }
+      if (error instanceof EntityError) {
+        return new ParameterError(error.message).send(res);
+      }
+      if (error instanceof Forbidden) {
+        return new Forbidden(error.getMessage()).send(res);
+      }
+      return new InternalServerError('Internal Server Error').send(res);
     }
   }
 }
