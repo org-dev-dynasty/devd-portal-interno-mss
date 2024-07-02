@@ -15,16 +15,6 @@ export class CreateUserUsecase {
     if (!userProps.password) {
       throw new EntityError("Missing password");
     }
-    if (!userProps.role) {
-      throw new EntityError("Missing role");
-    }
-    if (!userProps.telefone) {
-      throw new EntityError("Missing telefone");
-    }
-    if (!userProps.cpf) {
-      throw new EntityError("Missing cpf");
-    }
-
     if (!userProps.status) {
       throw new EntityError("Missing status");
     }

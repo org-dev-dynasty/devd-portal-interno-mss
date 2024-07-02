@@ -7,13 +7,122 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Color {
+  color_id    Int      @id @default(autoincrement())
+  template_id Int
+  name        String
+  hex_color   String
+  type_color  String
+  template    Template @relation(fields: [template_id], references: [template_id])
+}
+
+model Image {
+  image_id    Int      @id @default(autoincrement())
+  template_id Int
+  type_image  String
+  url_image   String
+  template    Template @relation(fields: [template_id], references: [template_id])
+}
+
+model Documentation {
+  documentation_id  Int     @id @default(autoincrement())
+  project_id        String
+  swagger_path_file String
+  project           Project @relation(fields: [project_id], references: [project_id])
+}
+
+model Credential {
+  credential_id String  @id @default(uuid())
+  project_id    String
+  env_name      String
+  env_content   String
+  project       Project @relation(fields: [project_id], references: [project_id])
+}
+
+model Template {
+  template_id Int     @id @default(autoincrement())
+  project_id  String
+  font_family String
+  project     Project @relation(fields: [project_id], references: [project_id])
+  colors      Color[]
+  images      Image[]
+}
+
+model Project {
+  project_id    String          @id @default(uuid())
+  name          String
+  description   String
+  status        String
+  created_at    DateTime        @default(now())
+  templates     Template[]
+  documentation Documentation[]
+  credentials   Credential[]
+  participants  Participant[]
+  tasks         Task[]
+}
+
+model Participant {
+  participant_id Int           @id @default(autoincrement())
+  project_id     String
+  user_id        String
+  project        Project       @relation(fields: [project_id], references: [project_id])
+  user           User          @relation(fields: [user_id], references: [user_id])
+  responsibles   Responsible[]
+}
+
+model Task {
+  task_id        Int           @id @default(autoincrement())
+  create_user_id String
+  name           String
+  description    String
+  finish_date    DateTime
+  status         String
+  created_at     DateTime      @default(now())
+  project_id     String
+  project        Project       @relation(fields: [project_id], references: [project_id])
+  responsibles   Responsible[]
+  create_user    User          @relation(fields: [create_user_id], references: [user_id])
+}
+
+model Responsible {
+  responsible_id Int         @id @default(autoincrement())
+  task_id        Int
+  participant_id Int
+  task           Task        @relation(fields: [task_id], references: [task_id])
+  participant    Participant @relation(fields: [participant_id], references: [participant_id])
+}
+
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  role      String
-  password  String
-  telefone  String     @unique
-  cpf       String     @unique
-  status    String
+  user_id       String        @id @default(uuid())
+  name          String
+  email         String        @unique
+  password      String
+  status        String
+  created_at    DateTime      @default(now())
+  participants  Participant[]
+  tasks_created Task[]
+  profiles      Profile[]
+}
+
+model Profile {
+  profile_id Int      @id @default(autoincrement())
+  user_id    String
+  role       String
+  user       User     @relation(fields: [user_id], references: [user_id])
+  accesses   Access[]
+}
+
+model Access {
+  profile_id       Int
+  functionality_id Int
+  profile          Profile       @relation(fields: [profile_id], references: [profile_id])
+  functionality    Functionality @relation(fields: [functionality_id], references: [functionality_id])
+
+  @@id([profile_id, functionality_id])
+}
+
+model Functionality {
+  functionality_id Int      @id @default(autoincrement())
+  name             String
+  accesses         Access[]
 }
