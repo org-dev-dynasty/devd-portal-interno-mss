@@ -8,6 +8,27 @@ import { STATUS } from "../../domain/enums/status_enum";
 const prisma = new PrismaClient();
 
 export class UserRepositoryPrisma implements IUserRepository {
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const allUsersFromPrisma = await prisma.user.findMany();
+
+      const allUsers = allUsersFromPrisma.map((user: any) => {
+        return new User({
+          id: user.user_id,
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          status: user.status as STATUS,
+          createdAt: user.created_at,
+        });
+      });
+      return allUsers;
+    } catch (error) {
+      console.error("Erro ao buscar todos os usuários:", error);
+      throw new Error("Erro ao buscar todos os usuários");
+    }
+  }
+
   async createUser(userProps: UserProps): Promise<User> {
     try {
       console.log("Criando novo usuário:", userProps);

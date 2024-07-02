@@ -7,9 +7,12 @@ export interface UserProps {
   email: string;
   password: string;
   status: STATUS;
+  createdAt?: Date;
+  
 }
 
 export class User {
+  
   constructor(public props: UserProps) {
     this.validateProps(props);
   }
@@ -46,6 +49,10 @@ export class User {
 
   get status(): STATUS {
     return this.props.status;
+  }
+
+  get createdAt(): Date | undefined {
+    return this.props.createdAt;
   }
 
   setName(name: string): void {
