@@ -40,8 +40,6 @@ export class UserRepositoryPrisma implements IUserRepository {
         status: createdUserFromPrisma.status as STATUS,
       });
 
-      console.log("Usuário criado com sucesso:", createdUser);
-
       return createdUser;
     } catch (error: any) {
       console.error("Erro ao criar usuário:", error);
