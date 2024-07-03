@@ -7,7 +7,7 @@ export class ProjectViewmodel {
     private projectId?: string
     private projectName: string
     private projectStatus: STATUS
-    private projectDescription: string | null
+    private projectDescription: string
 
   constructor(project: Project) {
     this.projectId = project.projectId;
