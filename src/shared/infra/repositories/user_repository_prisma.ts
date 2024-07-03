@@ -99,28 +99,35 @@ export class UserRepositoryPrisma implements IUserRepository {
 
   async getUserById(id: string): Promise<User | undefined> {
     try {
+
+      if (!id) {
+        throw new Error("ID do usuário não pode ser undefined ou null.");
+      }
+  
       const existingUser = await prisma.user.findUnique({
         where: {
           user_id: id,
         },
       });
-
+  
       if (!existingUser) {
         return undefined;
       }
-
+  
       return new User({
         id: existingUser.user_id,
         name: existingUser.name,
         email: existingUser.email,
         password: existingUser.password,
         status: existingUser.status as STATUS,
+        createdAt: existingUser.created_at,
       });
     } catch (error) {
       console.error("Erro ao buscar usuário por id:", error);
       throw new Error("Erro ao buscar usuário por id");
     }
   }
+  
 
   async updateUserStatus(id: string, status: STATUS): Promise<boolean> {
     try {
