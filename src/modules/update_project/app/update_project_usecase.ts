@@ -25,7 +25,6 @@ export class UpdateProjectUsecase {
     if (projectDescription && projectDescription.trim().length === 0) {
         throw new EntityError("Descrição de projeto inválida");
     }
-
     const updatedProject = await this.repo.updateProject(projectId, projectName, projectDescription, projectStatus);
 
     return updatedProject;
