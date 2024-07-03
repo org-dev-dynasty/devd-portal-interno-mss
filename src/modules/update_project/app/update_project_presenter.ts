@@ -9,7 +9,7 @@ const projectRepository = new ProjectRepositoryPrisma();
 const updateProjectUsecase = new UpdateProjectUsecase(projectRepository);
 const updateProjectController = new UpdateProjectController(updateProjectUsecase);
 
-router.put("/update-project", async (req: Request, res: Response) => {
+router.put("/update-project/:project_id", authenticateToken, async (req: Request, res: Response) => {
     await updateProjectController.handle(req, res);
   });
   
