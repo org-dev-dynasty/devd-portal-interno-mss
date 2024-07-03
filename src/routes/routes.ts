@@ -5,6 +5,7 @@ import CreateUserPresenter from "../modules/create_user/app/create_user_presente
 import GetAllUsersPresenter from "../modules/get_all_user/app/get_all_users_presenter";
 import GetUserByIdPresenter from "../modules/get_user_by_id/app/get_user_by_id_presenter";
 import CreateTaskPresenter from "../modules/create_task/app/create_task_presenter"
+import GetAllProjectPresenter from "../modules/get_all_projects/app/get_all_projects_presenter";
 
 
 const routes = (app: Express) => {
@@ -22,6 +23,7 @@ const routes = (app: Express) => {
 
   // project routes
   app.use("/api", CreateProjectPresenter);
+  app.use("/api", GetAllProjectPresenter);
 
   // task routes
   app.use("/api", CreateTaskPresenter)
