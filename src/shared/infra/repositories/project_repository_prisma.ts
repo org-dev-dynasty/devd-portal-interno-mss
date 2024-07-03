@@ -55,6 +55,9 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
 
   async getProjectById(projectId: string): Promise<Project | undefined> {
     try {
+      console.log("ENTRANDO NO REPO DO PROJETO")
+      console.log("Buscando projeto no banco de dados...");
+      console.log("ID do projeto:", projectId)
       const projectFromPrisma = await prisma.project.findUnique({
         where: {
           project_id: projectId,
