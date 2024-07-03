@@ -1,8 +1,9 @@
 import { User } from "../entities/user";
-import { STATUS } from "../enums/status_enum";
 
 export interface IUserRepository {
-  updateUserStatus(id: string, status: STATUS): Promise<boolean>;
+  createUser(user: User): Promise<User>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   getUserById(id: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
+  updateUserStatus(id: string, status: string): Promise<boolean>;
 }
