@@ -15,17 +15,26 @@ export class TaskRepositoryPrisma implements ITaskRepository {
           description: taskProps.taskDescription || "",
           finish_date: taskProps.taskFinishDate || new Date(),
           created_at: taskProps.taskCreatedAt || new Date(),
-          project: {},
-          create_user_id: taskProps.create_user_id,
+          project: {
+            connect: {
+              project_id: taskProps.project_id,
+            },
+          },
+          create_user: {
+            connect: {
+              user_id: taskProps.create_user_id,
+            },
+          },
         },
       });
       const createdTask = new Task({
         taskName: createdTaskFromPrisma.name,
-        taskStatus: (createdTaskFromPrisma.status) as STATUS,
+        taskStatus: createdTaskFromPrisma.status as STATUS,
         taskDescription: createdTaskFromPrisma.description,
         taskFinishDate: createdTaskFromPrisma.finish_date,
         taskCreatedAt: createdTaskFromPrisma.created_at,
-        create_user_id: createdTaskFromPrisma.create_user_id
+        create_user_id: createdTaskFromPrisma.create_user_id,
+        project_id: createdTaskFromPrisma.project_id
       });
       return createdTask;
     } catch (error: any) {
