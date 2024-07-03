@@ -67,11 +67,12 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
       }
 
       const project = new Project({
+        projectId: projectFromPrisma.project_id,
         projectName: projectFromPrisma.name,
         projectStatus: toEnum(projectFromPrisma.status),
         projectDescription: projectFromPrisma.description,
       });
-
+      console.log("Projeto encontrado:", project);
       return project || null;
     } catch (error: any) {
       console.log("Erro ao buscar projeto:", error);
