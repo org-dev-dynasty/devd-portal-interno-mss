@@ -5,6 +5,7 @@ export interface TaskProps {
     taskId?: string;
     taskName: string;
     create_user_id: string;
+    project_id: string;
     taskStatus: STATUS;
     taskDescription?: string;
     taskFinishDate?: Date;
