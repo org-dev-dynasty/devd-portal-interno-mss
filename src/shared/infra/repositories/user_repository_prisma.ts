@@ -96,6 +96,24 @@ export class UserRepositoryPrisma implements IUserRepository {
     }
   }
 
+  async updateUserStatus(id: string, status: STATUS): Promise<boolean> {
+    try {
+      await prisma.user.update({
+        where: {
+          user_id: id,
+        },
+        data: {
+          status: status,
+        },
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Erro ao atualizar status do usuário:", error);
+      throw new Error("Erro ao atualizar status do usuário");
+    }
+  }
+
   async getUserById(id: string): Promise<User | undefined> {
     try {
       const existingUser = await prisma.user.findUnique({
