@@ -10,18 +10,17 @@ export class updateUserStatusController {
 
   async handle(req: Request, res: Response): Promise<Response> {
     try {
-      const { id, status } = req.body;
+      const { user_id, status } = req.body;
       const errors = [];
-      if (!id) {
-        // se nao tiver nome
-        errors.push(new MissingParameters("Name")); // retorna que esqueceram o nome
+      if (!user_id) {
+        errors.push(new MissingParameters("Name"));
       }
 
       if (!status) {
         errors.push(new MissingParameters("Email"));
       }
 
-      await this.usecase.execute(id, status);
+      await this.usecase.execute(user_id, status);
       return res
         .status(200)
         .json(new UpdateStatusViewmodel("Status atualizado com sucesso"));
