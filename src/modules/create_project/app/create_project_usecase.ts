@@ -1,5 +1,5 @@
 // Conteúdo do arquivo...
-import { ProjectProps } from "../../../shared/domain/entities/project";
+import { Project, ProjectProps } from "../../../shared/domain/entities/project";
 import { IProjectRepository } from "../../../shared/domain/repositories/project_repository_interface";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 
@@ -18,7 +18,8 @@ export class CreateProjectUsecase {
         if (!projectProps.projectDescription) {
             throw new EntityError("Missing project description");
         }
-        const newProject = await this.repo.createProject(projectProps);
-        return newProject;
+        const newProject = new Project(projectProps);
+        const response = await this.repo.createProject(newProject);
+        return response;
     }
 }
