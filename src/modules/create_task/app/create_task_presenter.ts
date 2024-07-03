@@ -3,10 +3,12 @@ import { TaskRepositoryPrisma } from "../../../shared/infra/repositories/task_re
 import { authenticateToken } from "../../../shared/middlewares/jwt_middleware";
 import { CreateTaskController } from "./create_task_controller";
 import { CreateTaskUsecase } from "./create_task_usecase";
+import { ProjectRepositoryPrisma } from "../../../shared/infra/repositories/project_repository_prisma";
 
 const router = express.Router();
 const taskRepository = new TaskRepositoryPrisma();
-const createTaskUsecase = new CreateTaskUsecase(taskRepository);
+const projectRepository = new ProjectRepositoryPrisma();
+const createTaskUsecase = new CreateTaskUsecase(taskRepository, projectRepository);
 const createTaskController = new CreateTaskController(createTaskUsecase);
 
 router.post("/create-task", authenticateToken, async (req: Request, res: Response) => {
