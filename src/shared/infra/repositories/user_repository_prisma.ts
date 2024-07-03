@@ -1,3 +1,4 @@
+
 import { PrismaClient } from "@prisma/client";
 import { UserProps } from "../../../shared/domain/entities/user";
 import { IUserRepository } from "../../../shared/domain/repositories/user_repository_interface";
@@ -50,7 +51,7 @@ export class UserRepositoryPrisma implements IUserRepository {
           name: userProps.name,
           email: userProps.email,
           password: hashedPassword,
-          status: userProps.status  
+          status: userProps.status,
         },
       });
 
@@ -80,7 +81,7 @@ export class UserRepositoryPrisma implements IUserRepository {
       });
 
       if (!existingUser) {
-        return undefined; 
+        return undefined;
       }
 
       return new User({
@@ -93,6 +94,31 @@ export class UserRepositoryPrisma implements IUserRepository {
     } catch (error) {
       console.error("Erro ao buscar usuário por email:", error);
       throw new Error("Erro ao buscar usuário por email");
+    }
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    try {
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          user_id: id,
+        },
+      });
+
+      if (!existingUser) {
+        return undefined;
+      }
+
+      return new User({
+        id: existingUser.user_id,
+        name: existingUser.name,
+        email: existingUser.email,
+        password: existingUser.password,
+        status: existingUser.status as STATUS,
+      });
+    } catch (error) {
+      console.error("Erro ao buscar usuário por id:", error);
+      throw new Error("Erro ao buscar usuário por id");
     }
   }
 
@@ -111,31 +137,6 @@ export class UserRepositoryPrisma implements IUserRepository {
     } catch (error) {
       console.error("Erro ao atualizar status do usuário:", error);
       throw new Error("Erro ao atualizar status do usuário");
-    }
-  }
-
-  async getUserById(id: string): Promise<User | undefined> {
-    try {
-      const existingUser = await prisma.user.findUnique({
-        where: {
-          user_id: id,
-        },
-      });
-
-      if (!existingUser) {
-        return undefined; 
-      }
-
-      return new User({
-        id: existingUser.user_id,
-        name: existingUser.name,
-        email: existingUser.email,
-        password: existingUser.password,
-        status: existingUser.status as STATUS,
-      });
-    } catch (error) {
-      console.error("Erro ao buscar usuário por id:", error);
-      throw new Error("Erro ao buscar usuário por id");
     }
   }
 }
