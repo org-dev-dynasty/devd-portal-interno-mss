@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { EntityError } from "../helpers/errors/domain_errors";
 
 export type UserFromToken = {
-  id: string;
+  user_id: string;
   email: string;
 };
 
