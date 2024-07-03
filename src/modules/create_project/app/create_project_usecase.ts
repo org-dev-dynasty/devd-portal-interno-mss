@@ -19,7 +19,7 @@ export class CreateProjectUsecase {
             throw new EntityError("Missing project description");
         }
         const newProject = new Project(projectProps);
-        const response = await this.repo.createProject(newProject);
-        return response;
+        const project = await this.repo.createProject(newProject);
+        return project;
     }
 }
