@@ -7,7 +7,6 @@ import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 export class CreateProjectUsecase {
     constructor(private repo: IProjectRepository) {
     }
-
     async execute(projectProps: ProjectProps) {
         if (!projectProps.projectName) {
             throw new EntityError("project name");
