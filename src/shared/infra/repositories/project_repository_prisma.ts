@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Project } from "../../domain/entities/project";
 import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
-import { toEnum } from "../../domain/enums/status_enum";
+import { STATUS, toEnum } from "../../domain/enums/status_enum";
 
 const prisma = new PrismaClient();
 
@@ -55,6 +55,9 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
 
   async getProjectById(projectId: string): Promise<Project | undefined> {
     try {
+      console.log("ENTRANDO NO REPO DO PROJETO")
+      console.log("Buscando projeto no banco de dados...");
+      console.log("ID do projeto:", projectId)
       const projectFromPrisma = await prisma.project.findUnique({
         where: {
           project_id: projectId,
@@ -77,6 +80,32 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
     } catch (error: any) {
       console.log("Erro ao buscar projeto:", error);
       throw new Error("Erro ao buscar projeto no banco de dados.");
+    }
+  }
+
+  async updateProject(projectId: string, projectName?: string, projectDescription?: string, projectStatus?: STATUS): Promise<Project> { 
+    try {
+      const updatedProjectFromPrisma = await prisma.project.update({
+        where: {
+          project_id: projectId,
+        },
+        data: {
+          name: projectName,
+          status: projectStatus,
+          description: projectDescription,
+        },
+      });
+
+      const updatedProject = new Project({
+        projectName: updatedProjectFromPrisma.name,
+        projectStatus: toEnum(updatedProjectFromPrisma.status),
+        projectDescription: updatedProjectFromPrisma.description,
+      });
+
+      return updatedProject;
+    } catch (error: any) {
+      console.error("Erro ao atualizar projeto:", error);
+      throw new Error("Erro ao atualizar projeto no banco de dados.");
     }
   }
 }
