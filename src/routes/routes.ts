@@ -10,7 +10,7 @@ import GetUserByIdPresenter from "../modules/get_user_by_id/app/get_user_by_id_p
 import UpdateUserStatusPresenter from "../modules/update_user_status/app/update_user_status_presenter";
 import GetAllProjectPresenter from "../modules/get_all_projects/app/get_all_projects_presenter";
 import GetProjectByIdPresenter from "../modules/get_project_by_id/app/get_project_by_id_presenter";
-import UpdateProjectPresenter from "../modules/update_project/app/update_project_presenter";
+import UpdateProjectPresenter from "../modules/update_project_by_id/app/update_project_presenter";
 
 
 const routes = (app: Express) => {
