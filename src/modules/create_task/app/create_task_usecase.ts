@@ -12,6 +12,12 @@ export class CreateTaskUsecase {
         if (!taskProps.taskStatus) {
             throw new EntityError("Missing task status");
         }
+        if (!taskProps.create_user_id) {
+            throw new EntityError("Missing user id");
+        }
+        if (!taskProps.project_id) {
+            throw new EntityError("Missing project id");
+        }
 
         const newTask = await this.repo.createTask(taskProps);
         return newTask;
