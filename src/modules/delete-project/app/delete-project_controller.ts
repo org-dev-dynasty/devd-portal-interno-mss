@@ -6,6 +6,7 @@ import {
   Forbidden,
   InternalServerError,
   ParameterError,
+  UnprocessableEntity
 } from "../../../shared/helpers/http/http_codes";
 import {
   InvalidParameter,
@@ -35,6 +36,7 @@ export class DeleteProjectController {
         "Project deleted successfully."
       );
       return res.status(200).json(viewModel);
+
     } catch (error: any) {
       if (error instanceof InvalidRequest) {
         return new BadRequest(error.message).send(res);
@@ -50,6 +52,9 @@ export class DeleteProjectController {
       }
       if (error instanceof NoItemsFound) {
         return new Forbidden(error.message).send(res);
+      }
+      if (error instanceof UnprocessableEntity) {
+        return new UnprocessableEntity(error.getMessage()).send(res);
       }
       return new InternalServerError("Internal Server Error").send(res);
     }
