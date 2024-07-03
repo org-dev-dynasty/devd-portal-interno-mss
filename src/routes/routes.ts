@@ -1,3 +1,5 @@
+
+
 import { Express, Request, Response } from "express";
 import AuthUserPresenter from "../modules/auth_user/app/auth_user_presenter";
 import CreateProjectPresenter from "../modules/create_project/app/create_project_presenter";
@@ -6,6 +8,7 @@ import GetAllUsersPresenter from "../modules/get_all_user/app/get_all_users_pres
 import GetUserByIdPresenter from "../modules/get_user_by_id/app/get_user_by_id_presenter";
 import CreateTaskPresenter from "../modules/create_task/app/create_task_presenter"
 import GetAllProjectPresenter from "../modules/get_all_projects/app/get_all_projects_presenter";
+import GetProjectByIdPresenter from "../modules/get_project_by_id/app/get_project_by_id_presenter";
 
 
 const routes = (app: Express) => {
@@ -24,6 +27,7 @@ const routes = (app: Express) => {
   // project routes
   app.use("/api", CreateProjectPresenter);
   app.use("/api", GetAllProjectPresenter);
+  app.use("/api", GetProjectByIdPresenter)
 
   // task routes
   app.use("/api", CreateTaskPresenter)
