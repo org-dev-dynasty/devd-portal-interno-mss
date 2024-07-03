@@ -1,3 +1,4 @@
+
 import { PrismaClient } from "@prisma/client";
 import { UserProps } from "../../../shared/domain/entities/user";
 import { IUserRepository } from "../../../shared/domain/repositories/user_repository_interface";
@@ -50,7 +51,7 @@ export class UserRepositoryPrisma implements IUserRepository {
           name: userProps.name,
           email: userProps.email,
           password: hashedPassword,
-          status: userProps.status  
+          status: userProps.status,
         },
       });
 
@@ -80,7 +81,7 @@ export class UserRepositoryPrisma implements IUserRepository {
       });
 
       if (!existingUser) {
-        return undefined; 
+        return undefined;
       }
 
       return new User({
@@ -98,26 +99,51 @@ export class UserRepositoryPrisma implements IUserRepository {
 
   async getUserById(id: string): Promise<User | undefined> {
     try {
+
+      if (!id) {
+        throw new Error("ID do usuário não pode ser undefined ou null.");
+      }
+  
       const existingUser = await prisma.user.findUnique({
         where: {
           user_id: id,
         },
       });
-
+  
       if (!existingUser) {
-        return undefined; 
+        return undefined;
       }
-
+  
       return new User({
         id: existingUser.user_id,
         name: existingUser.name,
         email: existingUser.email,
         password: existingUser.password,
         status: existingUser.status as STATUS,
+        createdAt: existingUser.created_at,
       });
     } catch (error) {
       console.error("Erro ao buscar usuário por id:", error);
       throw new Error("Erro ao buscar usuário por id");
+    }
+  }
+  
+
+  async updateUserStatus(id: string, status: STATUS): Promise<boolean> {
+    try {
+      await prisma.user.update({
+        where: {
+          user_id: id,
+        },
+        data: {
+          status: status,
+        },
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Erro ao atualizar status do usuário:", error);
+      throw new Error("Erro ao atualizar status do usuário");
     }
   }
 }
