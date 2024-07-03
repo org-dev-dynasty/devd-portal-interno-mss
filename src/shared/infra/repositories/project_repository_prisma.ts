@@ -12,7 +12,7 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
                 data: {
                     name: projectProps.projectName,
                     status: projectProps.projectStatus,
-                    description: projectProps.projectDescription || "",
+                    description: projectProps.projectDescription,
                 },
             });
 
