@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { UserRepositoryPrisma } from "../../../../shared/infra/repositories/user_repository_prisma";
+import { UserRepositoryPrisma } from "../../../shared/infra/repositories/user_repository_prisma";
 import { getUserByIdUsecase } from "./get_user_by_id_usecase";
 import { GetUserByIdController } from "./get_user_by_id_controller";
 
