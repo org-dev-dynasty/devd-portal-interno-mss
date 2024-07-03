@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Project } from "../../domain/entities/project";
 import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
 import { STATUS, toEnum } from "../../domain/enums/status_enum";
+import { UnprocessableEntity } from "../../helpers/http/http_codes";
 
 const prisma = new PrismaClient();
 
@@ -113,18 +114,19 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
           project_id: projectId,
         },
       });
-  
-      if (!project) {
-        throw new Error("Projeto não encontrado.");
+
+      if (project == null) {
+        throw new UnprocessableEntity("Projeto não encontrado.");
       }
-  
+
       await prisma.project.delete({
         where: {
           project_id: projectId,
         },
       });
+
     } catch (error: any) {
-      console.error("Erro ao deletar projeto:", error);
+      // console.error("Erro ao deletar projeto:", error);
       throw new Error("Erro ao deletar projeto no banco de dados.");
     }
   }  
