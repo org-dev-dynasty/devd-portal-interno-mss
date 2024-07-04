@@ -21,8 +21,8 @@ export class DeleteProjectController {
           throw new MissingParameters("Missing project id.");
         }
 
-        const project = await this.usecase.execute(projectId);
-        const viewModel = new DeleteProjectViewModel(project);
+        await this.usecase.execute(projectId);
+        const viewModel = new DeleteProjectViewModel("Project deleted successfully.");
         return res.status(200).json(viewModel);
     } catch (error: any) {
         if (error instanceof InvalidRequest) {
