@@ -108,4 +108,17 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
       throw new Error("Erro ao atualizar projeto no banco de dados.");
     }
   }
+
+  async deleteProject(projectId: string): Promise<void> { 
+    try {
+      const project = await prisma.project.delete({
+        where: {
+          project_id: projectId,
+        },
+      });
+    } catch (error: any) {
+      console.error("Erro ao deletar projeto:", error);
+      throw new Error("Erro ao deletar projeto no banco de dados.");
+    }
+  }
 }
