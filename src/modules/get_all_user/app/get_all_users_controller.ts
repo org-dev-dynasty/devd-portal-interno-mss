@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { GetAllUsersUsecase } from "./get_all_users_usecase";
-import { GetAllUsersViewmodel } from "./get_all_users_vielmodel";
+import { GetAllUsersViewmodel } from "./get_all_users_viewmodel";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
 import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
 import { InvalidParameter, InvalidRequest } from "../../../shared/helpers/errors/controller_errors";
