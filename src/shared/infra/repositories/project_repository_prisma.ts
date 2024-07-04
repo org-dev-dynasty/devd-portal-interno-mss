@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Project } from "../../domain/entities/project";
 import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
 import { STATUS, toEnum } from "../../domain/enums/status_enum";
+import { UnprocessableEntity } from "../../helpers/http/http_codes";
 
 const prisma = new PrismaClient();
 
@@ -55,9 +56,6 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
 
   async getProjectById(projectId: string): Promise<Project | undefined> {
     try {
-      console.log("ENTRANDO NO REPO DO PROJETO")
-      console.log("Buscando projeto no banco de dados...");
-      console.log("ID do projeto:", projectId)
       const projectFromPrisma = await prisma.project.findUnique({
         where: {
           project_id: projectId,
@@ -108,4 +106,28 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
       throw new Error("Erro ao atualizar projeto no banco de dados.");
     }
   }
+
+  async deleteProject(projectId: string): Promise<void> {
+    try {
+      const project = await prisma.project.findUnique({
+        where: {
+          project_id: projectId,
+        },
+      });
+
+      if (project == null) {
+        throw new UnprocessableEntity("Projeto não encontrado.");
+      }
+
+      await prisma.project.delete({
+        where: {
+          project_id: projectId,
+        },
+      });
+
+    } catch (error: any) {
+      // console.error("Erro ao deletar projeto:", error);
+      throw new Error("Erro ao deletar projeto no banco de dados.");
+    }
+  }  
 }
