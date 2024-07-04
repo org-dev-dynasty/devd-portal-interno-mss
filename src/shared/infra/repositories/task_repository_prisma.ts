@@ -45,4 +45,33 @@ export class TaskRepositoryPrisma implements ITaskRepository {
       throw new Error("Erro ao criar tarefa no banco de dados.");
     }
   }
+
+  async getTaskById(taskId: number): Promise<Task> {
+    try {
+      const taskFromPrisma = await prisma.task.findUnique({
+        where: {
+          task_id: taskId,
+        },
+      });
+      if (!taskFromPrisma) {
+        throw new Error("Tarefa não encontrada.");
+      }
+      const task = new Task({
+        taskId: taskFromPrisma.task_id,
+        taskName: taskFromPrisma.name,
+        taskStatus: taskFromPrisma.status as STATUS,
+        taskDescription: taskFromPrisma.description,
+        taskFinishDate: taskFromPrisma.finish_date,
+        taskCreatedAt: taskFromPrisma.created_at,
+        create_user_id: taskFromPrisma.create_user_id,
+        project_id: taskFromPrisma.project_id
+      });
+      return task;
+    } catch (error: any) {
+      console.error("Erro ao buscar tarefa:", error);
+      throw new Error("Erro ao buscar tarefa no banco de dados.");
+    }
+  }
+
 }
+
