@@ -8,4 +8,5 @@ export interface IProjectRepository {
     deleteProject(projectId: string): Promise<void>;
     getProjectById(projectId: string): Promise<Project | undefined>;
     getAllProjects(): Promise<Project[]>;
+    updateProjectStatus(projectId: string, projectStatus: STATUS): Promise<Project>;
 }  
