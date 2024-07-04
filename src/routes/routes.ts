@@ -11,6 +11,7 @@ import UpdateUserStatusPresenter from "../modules/update_user_status/app/update_
 import GetAllProjectPresenter from "../modules/get_all_projects/app/get_all_projects_presenter";
 import GetProjectByIdPresenter from "../modules/get_project_by_id/app/get_project_by_id_presenter";
 import UpdateProjectPresenter from "../modules/update_project_by_id/app/update_project_presenter";
+import DeleteProjectPresenter from "../modules/delete-project/app/delete-project_presenter";
 
 
 const routes = (app: Express) => {
@@ -32,6 +33,7 @@ const routes = (app: Express) => {
   app.use("/api", GetAllProjectPresenter);
   app.use("/api", GetProjectByIdPresenter)
   app.use("/api", UpdateProjectPresenter);
+  app.use("/api", DeleteProjectPresenter);
 
   // task routes
   app.use("/api", CreateTaskPresenter)
