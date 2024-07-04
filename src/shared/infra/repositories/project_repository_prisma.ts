@@ -55,6 +55,10 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
   }
 
   async getProjectById(projectId: string): Promise<Project | undefined> {
+    if (!projectId) {
+      throw new Error("ID do projeto é necessário.");
+    }
+    
     try {
       const projectFromPrisma = await prisma.project.findUnique({
         where: {
@@ -81,7 +85,7 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
     }
   }
 
-  async updateProject(projectId: string, projectName?: string, projectDescription?: string, projectStatus?: STATUS): Promise<Project> { 
+  async updateProject(projectId: string, projectName?: string, projectDescription?: string, projectStatus?: STATUS): Promise<Project> {
     try {
       const updatedProjectFromPrisma = await prisma.project.update({
         where: {
@@ -129,5 +133,30 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
       // console.error("Erro ao deletar projeto:", error);
       throw new Error("Erro ao deletar projeto no banco de dados.");
     }
-  }  
+  }
+
+  async updateProjectStatus(projectId: string, projectStatus: STATUS): Promise<Project> {
+    try {
+      const upsateProjectStatusFromPrisma = await prisma.project.update({
+        where: {
+          project_id: projectId,
+        },
+        data: {
+          status: projectStatus,
+        },
+      });
+
+      const updatedProject = new Project({
+        projectId: upsateProjectStatusFromPrisma.project_id,
+        projectName: upsateProjectStatusFromPrisma.name,
+        projectStatus: toEnum(upsateProjectStatusFromPrisma.status),
+        projectDescription: upsateProjectStatusFromPrisma.description,
+      });
+
+      return updatedProject;
+    } catch (error: any) {
+      console.error("Erro ao atualizar status do projeto:", error);
+      throw new Error("Erro ao atualizar status do projeto no banco de dados.");
+    }
+  }
 }
