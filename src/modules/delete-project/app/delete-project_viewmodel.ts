@@ -1,26 +1,8 @@
-import { Project } from "../../../shared/domain/entities/project";
-
+// Conteúdo do arquivo...
 export class DeleteProjectViewModel {
-    project_id?: string;
-    projectName: string;
-    projectDescription: string;
-    projectStatus: string;
+    message: string;
 
-    constructor(project: Project) {
-        this.project_id = project.projectId ?? '';
-        this.projectName = project.projectName;
-        this.projectDescription = project.projectDescription;
-        this.projectStatus = project.projectStatus;
+    constructor(message: string) {
+        this.message = message;
     }
-
-    toJSON() {
-        return {
-            project_id: this.project_id,
-            projectName: this.projectName,
-            projectDescription: this.projectDescription,
-            projectStatus: this.projectStatus
-        }
-    }
-
-
 }
