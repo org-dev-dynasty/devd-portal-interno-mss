@@ -7,8 +7,17 @@ export interface UserProps {
   email: string;
   password: string;
   status: STATUS;
-  createdAt?: Date;
-  
+  createdAt?: Date; 
+}
+
+export interface IUserAll {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  status: STATUS;
+  role: string;
+  accesses: string[];
 }
 
 export class User {
