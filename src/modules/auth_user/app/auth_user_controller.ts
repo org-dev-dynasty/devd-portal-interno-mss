@@ -23,7 +23,9 @@ export class AuthUserController {
         process.env.JWT_SECRET as string,
         { expiresIn: "24h" }
       );
-      res.status(200).json({ token });
+      res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" })
+      
+      res.status(200).json({ message: "Logado" });
     } catch (error: any) {
       if (error instanceof NoItemsFound || error instanceof EntityError) {
         return new ParameterError(error.message).send(res);
