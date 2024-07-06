@@ -1,5 +1,4 @@
-
-
+const cookieParser = require("cookie-parser");
 import { Express, Request, Response } from "express";
 import AuthUserPresenter from "../modules/auth_user/app/auth_user_presenter";
 import CreateProjectPresenter from "../modules/create_project/app/create_project_presenter";
@@ -13,7 +12,8 @@ import GetProjectByIdPresenter from "../modules/get_project_by_id/app/get_projec
 import UpdateProjectPresenter from "../modules/update_project_by_id/app/update_project_presenter";
 import DeleteProjectPresenter from "../modules/delete-project/app/delete-project_presenter";
 import UpdateProjectStatusPresenter from "../modules/update_project_status/app/update_project_status_presenter";
-
+import GetUserByEmailPresenter from "../modules/get_user_by_email/app/get_user_by_email_presenter";
+import { authenticateToken } from "../shared/middlewares/jwt_middleware";
 
 const routes = (app: Express) => {
   app
@@ -22,6 +22,9 @@ const routes = (app: Express) => {
       res.status(200).send("Api Portal Interno Dev Dynasty")
     );
 
+  // middlewares cookie parser
+  app.use(cookieParser());
+  
   // user routes
   app.use("/api", CreateUserPresenter);
   app.use("/api", AuthUserPresenter);

@@ -1,4 +1,4 @@
-import { User } from "../../../shared/domain/entities/user";
+import { IUserAll } from "../../../shared/domain/entities/user";
 
 export class GetUserByEmailViewmodel {
     id: string;
@@ -6,8 +6,8 @@ export class GetUserByEmailViewmodel {
     email: string;
     status: string;
     
-    constructor(user: User) {
-        this.id = user.userId ?? '';
+    constructor(user: IUserAll) {
+        this.id = user.id ?? '';
         this.name = user.name;
         this.email = user.email;
         this.status = user.status;

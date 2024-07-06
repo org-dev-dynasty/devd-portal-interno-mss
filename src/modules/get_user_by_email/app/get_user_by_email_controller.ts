@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { GetUserByEmailUseCase } from "./get_user_by_email_usecase";
-import { UserFromToken } from "../../../../src/shared/middlewares/jwt_middleware"; 
 import { GetUserByEmailViewmodel } from "./get_user_by_email_viewmodel"; 
 
 export class GetUserByEmailController {
@@ -8,13 +7,14 @@ export class GetUserByEmailController {
 
   async handle(req: Request, res: Response) {
     try {
-      const userFromToken = req.user as UserFromToken; 
-      const email = userFromToken.email; 
+      const userId = req.user?.user_id;
+      if(!userId) return res.status(422).json({ error: "Email not found" });
+      console.log(userId)
 
-      const user = await this.usecase.execute(email);
+      const user = await this.usecase.execute(userId);
 
       if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(422).json({ error: "User not found" });
       }
 
       const userViewModel = new GetUserByEmailViewmodel(user);
