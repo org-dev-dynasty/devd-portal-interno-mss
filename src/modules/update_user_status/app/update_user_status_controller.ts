@@ -10,6 +10,13 @@ export class updateUserStatusController {
 
   async handle(req: Request, res: Response): Promise<Response> {
     try {
+
+      const userAccess = req.user?.access;
+
+      if(!userAccess?.includes('BTN-UPDATE-USER-STATUS')) {
+        throw new Forbidden('You do not have permission to access this feature');
+      }
+
       const { user_id, status } = req.body;
       const errors = [];
       if (!user_id) {
