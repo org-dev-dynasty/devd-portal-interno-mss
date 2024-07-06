@@ -5,7 +5,8 @@ import { EntityError } from "../helpers/errors/domain_errors";
 
 export type UserFromToken = {
   user_id: string;
-  email: string;
+  role: string;
+  access: string[];
 };
 
 declare module "express" {
