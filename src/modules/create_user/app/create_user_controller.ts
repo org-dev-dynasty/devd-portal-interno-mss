@@ -31,8 +31,23 @@ export class CreateUserController {
 
       const { name, email, password, status, role, access } = req.body;
 
-      if (!name || !email || !password || !status || !role || !access) {
+      if (!name) {
         throw new MissingParameters("Name");
+      }
+      if (!email) {
+        throw new MissingParameters("Email");
+      }
+      if (!password) {
+        throw new MissingParameters("Password");
+      }
+      if (!status) {
+        throw new MissingParameters("Status");
+      }
+      if (!role) {
+        throw new MissingParameters("Role");
+      }
+      if (!access) {
+        throw new MissingParameters("Access");
       }
 
       const createUserProps: CreateUserProps = {
