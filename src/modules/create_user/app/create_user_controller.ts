@@ -10,43 +10,40 @@ import { CreateUserViewModel } from "./create_user_viewmodel";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
 
+export interface CreateUserProps {
+  name: string;
+  email: string;
+  password: string;
+  status: string;
+  role: string;
+  access: number[];
+}
 export class CreateUserController {
   constructor(private usecase: CreateUserUsecase) {}
 
   async createUser(req: Request, res: Response) {
     try {
-      console.log("TENTANDO CRIAR USUÁRIO");
-      const { name, email, password, status } = req.body;
+      const userRole = req.user?.role;
 
-      const errors = [];
-
-      if (!name) {  // se nao tiver nome
-        errors.push(new MissingParameters("Name")); // retorna que esqueceram o nome
+      if(userRole !== 'ADMIN') {
+        return new Forbidden('You do not have permission to access this feature');
       }
 
-      if (!email) {
-        errors.push(new MissingParameters("Email"));
+      const { name, email, password, status, role, access } = req.body;
+
+      if (!name || !email || !password || !status || !role || !access) {
+        throw new MissingParameters("Name");
       }
 
-      if (!password) {
-        errors.push(new MissingParameters("Password"));
-      }
-
-      if (!status) {
-        errors.push(new MissingParameters("Status"));
-      }
-
-      if (errors.length > 0) {
-        return res.status(400).json(errors);
-      }
-
-      const userProps: UserProps = {
+      const createUserProps: CreateUserProps = {
         name,
         email,
         password,
         status,
+        role,
+        access,
       };
-      await this.usecase.execute(userProps);
+      await this.usecase.execute(createUserProps);
 
       const viewModel = new CreateUserViewModel(
         "Usuário cadastrado com sucesso!"
