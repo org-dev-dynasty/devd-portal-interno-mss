@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import { STATUS } from "../../domain/enums/status_enum";
 import { CreateUserProps } from "../../../modules/create_user/app/create_user_controller";
 import { connect } from "http2";
-import { ConflictItems } from "../../helpers/errors/usecase_errors";
+import { ConflictItems, NoItemsFound } from "../../helpers/errors/usecase_errors";
 
 const prisma = new PrismaClient();
 
@@ -44,7 +44,7 @@ export class UserRepositoryPrisma implements IUserRepository {
       });
 
       if (existingUser) {
-        throw new Error("User already exists in the database.");
+        throw new ConflictItems("User already exists in the database.");
       }
 
       const hashedPassword = await bcrypt.hash(userProps.password, 10);
@@ -111,7 +111,7 @@ export class UserRepositoryPrisma implements IUserRepository {
       });
 
       if (!existingUser) {
-        throw new ConflictItems("User already exists")
+        throw new NoItemsFound("User");
       }
 
       const formatUserData = (data: any) => {
