@@ -9,6 +9,7 @@ import {
 import { CreateUserViewModel } from "./create_user_viewmodel";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
+import { ConflictItems } from "../../../shared/helpers/errors/usecase_errors";
 
 export interface CreateUserProps {
   name: string;
@@ -76,6 +77,12 @@ export class CreateUserController {
       }
       if (error instanceof Forbidden) {
         return new Forbidden(error.getMessage()).send(res);
+      }
+      if (error instanceof MissingParameters) {
+        return new ParameterError(error.message).send(res);
+      }
+      if(error instanceof ConflictItems) {
+        return new ConflictItems(error.message);
       }
       return new InternalServerError('Internal Server Error').send(res);
     }
