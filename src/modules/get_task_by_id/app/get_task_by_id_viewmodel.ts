@@ -12,7 +12,7 @@ export class GetTaskByIdViewmodel {
     taskCreatedAt?: Date;
 
     constructor(task: Task) {
-        this.taskId = task.taskId ?? '';
+        this.taskId = task.taskId;
         this.taskName = task.taskName;
         this.create_user_id = task.create_user_id;
         this.project_id = task.project_id;
