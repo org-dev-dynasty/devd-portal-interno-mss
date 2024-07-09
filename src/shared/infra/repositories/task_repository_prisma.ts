@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { Task, TaskProps } from "../../../shared/domain/entities/task";
 import { STATUS } from "../../domain/enums/status_enum";
 import { ITaskRepository } from "../../domain/repositories/task_repository_interface";
+import { MissingParameters } from "../../helpers/errors/controller_errors";
+import { UnprocessableEntity } from "../../helpers/http/http_codes";
 
 const prisma = new PrismaClient();
 
@@ -34,7 +36,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
         taskFinishDate: createdTaskFromPrisma.finish_date,
         taskCreatedAt: createdTaskFromPrisma.created_at,
         create_user_id: createdTaskFromPrisma.create_user_id,
-        project_id: createdTaskFromPrisma.project_id
+        project_id: createdTaskFromPrisma.project_id,
       });
       return createdTask;
     } catch (error: any) {
@@ -64,7 +66,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
         taskFinishDate: taskFromPrisma.finish_date,
         taskCreatedAt: taskFromPrisma.created_at,
         create_user_id: taskFromPrisma.create_user_id,
-        project_id: taskFromPrisma.project_id
+        project_id: taskFromPrisma.project_id,
       });
       return task;
     } catch (error: any) {
@@ -73,5 +75,59 @@ export class TaskRepositoryPrisma implements ITaskRepository {
     }
   }
 
-}
+  async getAllTasksByProject(
+    userId: string,
+    projectId: string
+  ): Promise<Task[]> {
+    try {
+      if (!userId) {
+        throw new MissingParameters("userId");
+      }
+      if (!projectId) {
+        throw new MissingParameters("projectId");
+      }
 
+      const participant = await prisma.participant.findFirst({
+        where: {
+          user_id: userId,
+          project_id: projectId,
+        },
+        include: {
+          responsibles: {
+            include: {
+              task: true,
+            },
+          },
+        },
+      });
+
+      if (!participant) {
+        throw new UnprocessableEntity("User not participant of this project.");
+      }
+      
+      const tasks = await prisma.task.findMany({
+        where: {
+          project_id: projectId,
+        },
+      });
+      const allTasks = tasks.map((task: any) => {
+        return new Task({
+          taskId: task.task_id,
+          taskName: task.name,
+          taskStatus: task.status as STATUS,
+          taskDescription: task.description,
+          taskFinishDate: task.finish_date,
+          taskCreatedAt: task.created_at,
+          create_user_id: task.create_user_id,
+          project_id: task.project_id,
+        });
+      });
+      console.log("TAREFAS TASK -> " + tasks);
+      console.log("TAREFAS -> " + allTasks);
+      return allTasks;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error in getAllTasksByProject function.");
+    }
+  }
+}
