@@ -1,12 +1,12 @@
 import { Task } from "../../../shared/domain/entities/task";
-import { STATUS } from "../../../shared/domain/enums/status_enum";
+import { TASK_STATUS } from "../../../shared/domain/enums/task_status_enum";
 
 export class GetAllTasksByProjectViewmodel {
   taskId?: number;
   taskName: string;
   create_user_id: string;
   project_id: string;
-  taskStatus: STATUS;
+  taskStatus: TASK_STATUS;
   taskDescription?: string;
   taskFinishDate?: Date;
   taskCreatedAt?: Date;
