@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import { STATUS } from "../../domain/enums/status_enum";
 import { CreateUserProps } from "../../../modules/create_user/app/create_user_controller";
 import { connect } from "http2";
+import { ConflictItems } from "../../helpers/errors/usecase_errors";
 
 const prisma = new PrismaClient();
 
@@ -90,7 +91,7 @@ export class UserRepositoryPrisma implements IUserRepository {
     }
   }
 
-  async getUserByEmail(email: string): Promise<IUserAll | undefined> {
+  async getUserByEmail(email: string): Promise<IUserAll> {
     try {
       const existingUser = await prisma.user.findFirst({
         where: {
@@ -110,7 +111,7 @@ export class UserRepositoryPrisma implements IUserRepository {
       });
 
       if (!existingUser) {
-        return undefined;
+        throw new ConflictItems("User already exists")
       }
 
       const formatUserData = (data: any) => {
