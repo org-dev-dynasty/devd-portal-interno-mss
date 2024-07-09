@@ -6,7 +6,7 @@ import {
   Forbidden,
   InternalServerError,
   ParameterError,
-  UnprocessableEntity
+  UnprocessableEntity,
 } from "../../../shared/helpers/http/http_codes";
 import {
   InvalidParameter,
@@ -20,6 +20,12 @@ export class DeleteProjectController {
   constructor(private usecase: DeleteProjectUsecase) {}
 
   async handle(req: Request, res: Response) {
+    const userAccess = req.user?.access;
+
+    if (!userAccess?.includes("BTN-DELETE-PROJECT")) {
+      throw new Forbidden("You do not have permission to access this feature");
+    }
+
     try {
       const projectId: string = req.params.projectId;
 
@@ -36,7 +42,6 @@ export class DeleteProjectController {
         "Project deleted successfully."
       );
       return res.status(200).json(viewModel);
-
     } catch (error: any) {
       if (error instanceof InvalidRequest) {
         return new BadRequest(error.message).send(res);
