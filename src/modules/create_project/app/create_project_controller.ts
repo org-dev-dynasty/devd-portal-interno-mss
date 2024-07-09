@@ -3,13 +3,12 @@ import { Request, Response } from "express";
 import { ProjectProps } from "../../../shared/domain/entities/project";
 import { CreateProjectViewModel } from "../../../modules/create_project/app/create_project_viewmodel";
 import { CreateProjectUsecase } from "./create_project_usecase";
-import { BadRequest, Forbidden, InternalServerError } from "http-errors";
+import { ParameterError, BadRequest, Forbidden, InternalServerError } from "../../../shared/helpers/http/http_codes";
 import {
   InvalidParameter,
   InvalidRequest,
   MissingParameters,
 } from "../../../shared/helpers/errors/controller_errors";
-import { ParameterError } from "../../../shared/helpers/http/http_codes";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 
 export class CreateProjectController {
@@ -65,7 +64,7 @@ export class CreateProjectController {
         return new ParameterError(error.message).send(res);
       }
       if (error instanceof Forbidden) {
-        return new Forbidden(error.message).send(res);
+        return new Forbidden(error.getMessage()).send(res);
       }
       if (error instanceof MissingParameters) {
         return new ParameterError(error.message).send(res);
