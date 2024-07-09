@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { CreateUserUsecase } from "./create_user_usecase";
-import { UserProps } from "../../../shared/domain/entities/user";
 import {
   InvalidParameter,
   InvalidRequest,
