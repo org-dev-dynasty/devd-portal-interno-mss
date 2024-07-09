@@ -2,7 +2,7 @@ import { EntityError } from "../../helpers/errors/domain_errors";
 import { STATUS } from "../enums/status_enum";
 
 export interface TaskProps {
-    taskId?: string;
+    taskId?: number;
     taskName: string;
     create_user_id: string;
     project_id: string;
@@ -31,7 +31,7 @@ export class Task {
         }
     }
     
-    get taskId(): string | undefined {
+    get taskId(): number | undefined {
         return this.props.taskId;
     }
 
@@ -39,7 +39,7 @@ export class Task {
         return this.props.taskName;
     }
 
-    get taskStatus(): string {
+    get taskStatus(): STATUS {
         return this.props.taskStatus;
     }
 
@@ -53,6 +53,14 @@ export class Task {
 
     get taskCreatedAt(): Date | undefined {
         return this.props.taskCreatedAt;
+    }
+
+    get create_user_id(): string {
+        return this.props.create_user_id;
+    }
+
+    get project_id(): string {
+        return this.props.project_id
     }
 
     setTaskName(taskName: string): void {
