@@ -18,6 +18,7 @@ export interface IUserAll {
   status: STATUS;
   role: string;
   accesses: string[];
+  projects: string[];
 }
 
 export class User {
