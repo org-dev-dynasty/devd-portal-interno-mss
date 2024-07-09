@@ -5,5 +5,6 @@ export interface ITaskRepository {
   // deleteTask(taskId: string): Promise<void>;
   updateTask(task: Task): Promise<Task>;
   getTaskById(taskId: number): Promise<Task | undefined>;
-  getAllTasksByProject(userId: string, projectId: string): Promise<Task[]>;
+  isUserParticipantOfProject(userId: string, projectId: string): Promise<boolean>;
+  getAllTasksByProject(projectId: string): Promise<Task[]>;
 }
