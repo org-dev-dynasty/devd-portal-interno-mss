@@ -41,7 +41,6 @@ export class TaskRepositoryPrisma implements ITaskRepository {
       });
       return createdTask;
     } catch (error: any) {
-      console.error("Erro ao criar tarefa:", error);
       if (error.message.includes("Task already exists in the database.")) {
         throw new Error("Tarefa já cadastrada.");
       }
@@ -71,7 +70,6 @@ export class TaskRepositoryPrisma implements ITaskRepository {
       });
       return task;
     } catch (error: any) {
-      console.error("Erro ao buscar tarefa:", error);
       throw new Error("Erro ao buscar tarefa no banco de dados.");
     }
   }
@@ -123,11 +121,8 @@ export class TaskRepositoryPrisma implements ITaskRepository {
           project_id: task.project_id,
         });
       });
-      console.log("TAREFAS TASK -> " + tasks);
-      console.log("TAREFAS -> " + allTasks);
       return allTasks;
     } catch (error) {
-      console.error(error);
       throw new Error("Error in getAllTasksByProject function.");
     }
   }
