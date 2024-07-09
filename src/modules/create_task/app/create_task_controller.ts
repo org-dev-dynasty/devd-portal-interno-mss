@@ -8,25 +8,29 @@ import {
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import {
   BadRequest,
+  Forbidden,
   InternalServerError,
   ParameterError,
 } from "../../../shared/helpers/http/http_codes";
 import { CreateTaskUsecase } from "./create_task_usecase";
 import { CreateTaskViewModel } from "./create_task_viewmodel";
-import { UserFromToken } from "../../../shared/middlewares/jwt_middleware";
 
 export class CreateTaskController {
   constructor(private usecase: CreateTaskUsecase) {}
 
   async createTask(req: Request, res: Response) {
     try {
-      const userFromToken = req.user as UserFromToken;
+      const userAccess = req.user?.access;
 
-      if (!userFromToken) {
-        return res.status(403).json({ error: "Acesso negado." });
+      if (!userAccess?.includes("BTN-CREATE-TASK")){
+        throw new Forbidden("You do not have permission to access this feature")
+      }
+      
+      const userId = req.user?.user_id;
+      if(!userId) {
+        throw new Forbidden("You do not have permission to access this feature")
       }
 
-      const created_user_id = userFromToken.user_id;
       const {
         taskName,
         taskStatus,
@@ -54,7 +58,7 @@ export class CreateTaskController {
         taskStatus,
         taskDescription,
         taskFinishDate,
-        create_user_id: created_user_id,
+        create_user_id: userId,
         project_id,
       };
       await this.usecase.execute(taskProps);
@@ -72,6 +76,9 @@ export class CreateTaskController {
       }
       if (error instanceof EntityError) {
         return new BadRequest(error.message).send(res);
+      }
+      if( error instanceof Forbidden) {
+        return new Forbidden(error.getMessage()).send(res);
       }
       return new InternalServerError(error.message).send(res);
     }
