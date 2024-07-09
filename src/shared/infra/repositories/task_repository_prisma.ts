@@ -74,57 +74,33 @@ export class TaskRepositoryPrisma implements ITaskRepository {
     }
   }
 
-  async getAllTasksByProject(
-    userId: string,
-    projectId: string
-  ): Promise<Task[]> {
-    try {
-      if (!userId) {
-        throw new MissingParameters("userId");
-      }
-      if (!projectId) {
-        throw new MissingParameters("projectId");
-      }
 
-      const participant = await prisma.participant.findFirst({
-        where: {
-          user_id: userId,
-          project_id: projectId,
-        },
-        include: {
-          responsibles: {
-            include: {
-              task: true,
-            },
-          },
-        },
-      });
+  async getAllTasksByProject(projectId: string): Promise<Task[]> {
+    const tasks = await prisma.task.findMany({
+      where: { project_id: projectId },
+    });
 
-      if (!participant) {
-        throw new UnprocessableEntity("User not participant of this project.");
-      }
-      
-      const tasks = await prisma.task.findMany({
-        where: {
-          project_id: projectId,
-        },
-      });
-      const allTasks = tasks.map((task: any) => {
-        return new Task({
-          taskId: task.task_id,
-          taskName: task.name,
-          taskStatus: task.status as TASK_STATUS,
-          taskDescription: task.description,
-          taskFinishDate: task.finish_date,
-          taskCreatedAt: task.created_at,
-          create_user_id: task.create_user_id,
-          project_id: task.project_id,
-        });
-      });
-      return allTasks;
-    } catch (error) {
-      throw new Error("Error in getAllTasksByProject function.");
-    }
+    return tasks.map(task => new Task({
+      taskId: task.task_id,
+      taskName: task.name,
+      taskStatus: task.status as TASK_STATUS,
+      taskDescription: task.description,
+      taskFinishDate: task.finish_date,
+      taskCreatedAt: task.created_at,
+      create_user_id: task.create_user_id,
+      project_id: task.project_id,
+    }));
+  }
+
+  async isUserParticipantOfProject(userId: string, projectId: string): Promise<boolean> {
+    const participant = await prisma.participant.findFirst({
+      where: {
+        user_id: userId,
+        project_id: projectId,
+      },
+    });
+
+    return !!participant;
   }
   
   async updateTask(taskProps: TaskProps): Promise<Task> {
