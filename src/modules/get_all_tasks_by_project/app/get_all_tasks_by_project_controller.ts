@@ -18,8 +18,8 @@ export class GetAllTasksByProjectController {
       const projectIdToken: string[] = req.user!.projects;
       const projectId: string = req.params.projectId;
 
-      console.log("PROJECT ID PARAM NO CONTROLLER: " + projectId)
-      console.log("PROJECT ID TOKEN NO CONTROLLER: " + projectIdToken)
+      console.log("PROJECT ID PARAM NO CONTROLLER: " + projectId);
+      console.log("PROJECT ID TOKEN NO CONTROLLER: " + projectIdToken);
 
       if (!userId) {
         throw new EntityError("user id");
@@ -34,10 +34,11 @@ export class GetAllTasksByProjectController {
       }
 
       const tasks = await this.usecase.execute(userId, projectId);
-      const viewmodel = new GetAllTasksByProjectViewmodel(tasks);
-      const tasksViewModel = tasks.map((task) => viewmodel.toJSON());
+      const viewmodel = tasks.map(
+        (task) => new GetAllTasksByProjectViewmodel(task)
+      );
 
-      return res.status(200).json(tasksViewModel);
+      return res.status(200).json({ tasks: viewmodel, message: "All tasks has been found" });
     } catch (error: any) {
       if (error instanceof NoItemsFound) {
         return res.status(404).json({ error: error.message });
