@@ -1,10 +1,12 @@
 
 import { PrismaClient } from "@prisma/client";
-import { UserProps } from "../../../shared/domain/entities/user";
+import { IUserAll, UserProps } from "../../../shared/domain/entities/user";
 import { IUserRepository } from "../../../shared/domain/repositories/user_repository_interface";
 import { User } from "../../domain/entities/user";
 import bcrypt from "bcrypt";
 import { STATUS } from "../../domain/enums/status_enum";
+import { CreateUserProps } from "../../../modules/create_user/app/create_user_controller";
+import { connect } from "http2";
 
 const prisma = new PrismaClient();
 
@@ -30,7 +32,7 @@ export class UserRepositoryPrisma implements IUserRepository {
     }
   }
 
-  async createUser(userProps: UserProps): Promise<User> {
+  async createUser(userProps: CreateUserProps): Promise<User> {
     try {
       console.log("Criando novo usuário:", userProps);
 
@@ -51,9 +53,25 @@ export class UserRepositoryPrisma implements IUserRepository {
           name: userProps.name,
           email: userProps.email,
           password: hashedPassword,
-          status: userProps.status,
-        },
+          status: userProps.status
+        }
       });
+
+      const createdProfileFromPrisma = await prisma.profile.create({
+        data: {
+          user_id: createdUserFromPrisma.user_id,
+          role: userProps.role,
+        }
+      })
+
+      for (let i = 0; i < userProps.access.length; i++){
+        await prisma.access.create({
+          data: {
+            profile_id: createdProfileFromPrisma.profile_id,
+            functionality_id: userProps.access[i]
+          }
+        })
+      }
 
       const createdUser = new User({
         name: createdUserFromPrisma.name,
@@ -72,25 +90,46 @@ export class UserRepositoryPrisma implements IUserRepository {
     }
   }
 
-  async getUserByEmail(email: string): Promise<User | undefined> {
+  async getUserByEmail(email: string): Promise<IUserAll | undefined> {
     try {
-      const existingUser = await prisma.user.findUnique({
+      const existingUser = await prisma.user.findFirst({
         where: {
           email: email,
         },
+        include: {
+          profiles: {
+            include: {
+              accesses: {
+                include: {
+                  functionality: true,
+                }
+              }
+            }
+          }
+        }
       });
 
       if (!existingUser) {
         return undefined;
       }
 
-      return new User({
-        id: existingUser.user_id,
-        name: existingUser.name,
-        email: existingUser.email,
-        password: existingUser.password,
-        status: existingUser.status as STATUS,
-      });
+      const formatUserData = (data: any) => {
+        const profile = data.profiles[0];
+        const accesses = profile ? profile.accesses.map((access: any) => access.functionality.name) : [];
+
+        return {
+          id: data.user_id,
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          status: data.status as STATUS,
+          role: profile ? profile.role : '',
+          accesses: accesses,
+        };
+      };
+
+      return formatUserData(existingUser);
+
     } catch (error) {
       console.error("Erro ao buscar usuário por email:", error);
       throw new Error("Erro ao buscar usuário por email");

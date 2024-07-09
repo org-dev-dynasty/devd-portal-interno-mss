@@ -1,10 +1,12 @@
+import "cookie-parser";
 import { Request as ExpressRequest, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { EntityError } from "../helpers/errors/domain_errors";
 
 export type UserFromToken = {
   user_id: string;
-  email: string;
+  role: string;
+  access: string[];
 };
 
 declare module "express" {
@@ -18,8 +20,7 @@ export function authenticateToken(
   res: Response,
   next: NextFunction
 ) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies["token"];
 
   console.log("Received token:", token);
 
