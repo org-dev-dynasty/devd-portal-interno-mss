@@ -101,8 +101,6 @@ export class TaskRepositoryPrisma implements ITaskRepository {
         },
       });
 
-      console.log("ESSA MERDA CHEGOU NISSO ->" + participant);
-
       if (!participant) {
         throw new UnprocessableEntity("User not participant of this project.");
       }
