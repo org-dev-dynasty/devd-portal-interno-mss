@@ -7,7 +7,7 @@ export type UserFromToken = {
   user_id: string;
   role: string;
   access: string[];
-  participant_id: string[];
+  projects: string[];
 };
 
 declare module "express" {
