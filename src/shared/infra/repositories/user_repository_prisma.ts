@@ -133,7 +133,7 @@ export class UserRepositoryPrisma implements IUserRepository {
           status: data.status as STATUS,
           role: profile ? profile.role : "",
           accesses: accesses,
-          participants_id: existingUser.participants.map(
+          projects: existingUser.participants.map(
             (participant: any) => participant.project_id
           ),
         };

@@ -18,6 +18,7 @@ export class GetProjectByIdController {
   constructor(private usecase: getProjectByIdUsecase) {}
 
   async handle(req: Request, res: Response) {
+
     try {
       const projectId: string = req.params.projectId;
 
