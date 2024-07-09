@@ -24,10 +24,10 @@ export class CreateUserController {
 
   async createUser(req: Request, res: Response) {
     try {
-      const userRole = req.user?.role;
+      const userAccess = req.user?.access;
 
-      if(userRole !== 'ADMIN') {
-        return new Forbidden('You do not have permission to access this feature');
+      if(!userAccess?.includes('BTN-CREATE-USER')) {
+        throw new Forbidden('You do not have permission to access this feature');
       }
 
       const { name, email, password, status, role, access } = req.body;
