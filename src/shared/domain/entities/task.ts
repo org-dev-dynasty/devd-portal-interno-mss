@@ -1,12 +1,12 @@
 import { EntityError } from "../../helpers/errors/domain_errors";
-import { STATUS } from "../enums/status_enum";
+import { TASK_STATUS } from "../enums/task_status_enum";
 
 export interface TaskProps {
     taskId?: number;
     taskName: string;
     create_user_id: string;
     project_id: string;
-    taskStatus: STATUS;
+    taskStatus: TASK_STATUS;
     taskDescription?: string;
     taskFinishDate?: Date;
     taskCreatedAt?: Date;
@@ -39,7 +39,7 @@ export class Task {
         return this.props.taskName;
     }
 
-    get taskStatus(): STATUS {
+    get taskStatus(): TASK_STATUS {
         return this.props.taskStatus;
     }
 
@@ -70,7 +70,7 @@ export class Task {
         this.props.taskName = taskName;
     }
 
-    setTaskStatus(taskStatus: STATUS): void {
+    setTaskStatus(taskStatus: TASK_STATUS): void {
         if (!Task.isValidStatus(taskStatus)) {
             throw new EntityError("Invalid task status");
         }
@@ -97,7 +97,7 @@ export class Task {
         return taskName.length > 0 && taskName.length <= 100;
     }
 
-    static isValidStatus(taskStatus: STATUS): boolean {
+    static isValidStatus(taskStatus: TASK_STATUS): boolean {
         if (taskStatus == null) {
             return false;
         }
