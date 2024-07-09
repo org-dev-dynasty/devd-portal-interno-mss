@@ -1,10 +1,5 @@
 import { Request, Response } from "express";
-import { UserFromToken } from "../../../shared/middlewares/jwt_middleware";
 import { GetAllTasksByProjectUsecase } from "./get_all_tasks_by_project_usecase";
-import {
-  ForbiddenAction,
-  NoItemsFound,
-} from "../../../shared/helpers/errors/usecase_errors";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
 import { GetAllTasksByProjectViewmodel } from "./get_all_tasks_by_project_viewmodel";
