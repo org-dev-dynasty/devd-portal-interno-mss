@@ -1,4 +1,3 @@
-
 import { PrismaClient } from "@prisma/client";
 import { IUserAll, UserProps } from "../../../shared/domain/entities/user";
 import { IUserRepository } from "../../../shared/domain/repositories/user_repository_interface";
@@ -7,7 +6,10 @@ import bcrypt from "bcrypt";
 import { STATUS } from "../../domain/enums/status_enum";
 import { CreateUserProps } from "../../../modules/create_user/app/create_user_controller";
 import { connect } from "http2";
-import { ConflictItems, NoItemsFound } from "../../helpers/errors/usecase_errors";
+import {
+  ConflictItems,
+  NoItemsFound,
+} from "../../helpers/errors/usecase_errors";
 
 const prisma = new PrismaClient();
 
@@ -54,24 +56,24 @@ export class UserRepositoryPrisma implements IUserRepository {
           name: userProps.name,
           email: userProps.email,
           password: hashedPassword,
-          status: userProps.status
-        }
+          status: userProps.status,
+        },
       });
 
       const createdProfileFromPrisma = await prisma.profile.create({
         data: {
           user_id: createdUserFromPrisma.user_id,
           role: userProps.role,
-        }
-      })
+        },
+      });
 
-      for (let i = 0; i < userProps.access.length; i++){
+      for (let i = 0; i < userProps.access.length; i++) {
         await prisma.access.create({
           data: {
             profile_id: createdProfileFromPrisma.profile_id,
-            functionality_id: userProps.access[i]
-          }
-        })
+            functionality_id: userProps.access[i],
+          },
+        });
       }
 
       const createdUser = new User({
@@ -98,17 +100,20 @@ export class UserRepositoryPrisma implements IUserRepository {
           email: email,
         },
         include: {
+          participants: true,
           profiles: {
             include: {
               accesses: {
                 include: {
                   functionality: true,
-                }
-              }
-            }
-          }
-        }
+                },
+              },
+            },
+          },
+        },
       });
+
+      console.log("EXISTING   -> " + existingUser);
 
       if (!existingUser) {
         throw new NoItemsFound("User");
@@ -116,7 +121,9 @@ export class UserRepositoryPrisma implements IUserRepository {
 
       const formatUserData = (data: any) => {
         const profile = data.profiles[0];
-        const accesses = profile ? profile.accesses.map((access: any) => access.functionality.name) : [];
+        const accesses = profile
+          ? profile.accesses.map((access: any) => access.functionality.name)
+          : [];
 
         return {
           id: data.user_id,
@@ -124,13 +131,15 @@ export class UserRepositoryPrisma implements IUserRepository {
           email: data.email,
           password: data.password,
           status: data.status as STATUS,
-          role: profile ? profile.role : '',
+          role: profile ? profile.role : "",
           accesses: accesses,
+          participants_id: existingUser.participants.map(
+            (participant: any) => participant.participant_id
+          ),
         };
       };
 
       return formatUserData(existingUser);
-
     } catch (error) {
       console.error("Erro ao buscar usuário por email:", error);
       throw new Error("Erro ao buscar usuário por email");
@@ -139,21 +148,20 @@ export class UserRepositoryPrisma implements IUserRepository {
 
   async getUserById(id: string): Promise<User | undefined> {
     try {
-
       if (!id) {
         throw new Error("ID do usuário não pode ser undefined ou null.");
       }
-  
+
       const existingUser = await prisma.user.findUnique({
         where: {
           user_id: id,
         },
       });
-  
+
       if (!existingUser) {
         return undefined;
       }
-  
+
       return new User({
         id: existingUser.user_id,
         name: existingUser.name,
@@ -167,7 +175,6 @@ export class UserRepositoryPrisma implements IUserRepository {
       throw new Error("Erro ao buscar usuário por id");
     }
   }
-  
 
   async updateUserStatus(id: string, status: STATUS): Promise<boolean> {
     try {
