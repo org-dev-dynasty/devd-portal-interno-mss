@@ -134,7 +134,7 @@ export class UserRepositoryPrisma implements IUserRepository {
           role: profile ? profile.role : "",
           accesses: accesses,
           participants_id: existingUser.participants.map(
-            (participant: any) => participant.participant_id
+            (participant: any) => participant.project_id
           ),
         };
       };
