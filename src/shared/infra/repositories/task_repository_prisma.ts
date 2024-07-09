@@ -4,6 +4,7 @@ import { STATUS } from "../../domain/enums/status_enum";
 import { ITaskRepository } from "../../domain/repositories/task_repository_interface";
 import { MissingParameters } from "../../helpers/errors/controller_errors";
 import { UnprocessableEntity } from "../../helpers/http/http_codes";
+import { TASK_STATUS } from "../../domain/enums/task_status_enum";
 
 const prisma = new PrismaClient();
 
@@ -31,7 +32,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
       });
       const createdTask = new Task({
         taskName: createdTaskFromPrisma.name,
-        taskStatus: createdTaskFromPrisma.status as STATUS,
+        taskStatus: createdTaskFromPrisma.status as TASK_STATUS,
         taskDescription: createdTaskFromPrisma.description,
         taskFinishDate: createdTaskFromPrisma.finish_date,
         taskCreatedAt: createdTaskFromPrisma.created_at,
@@ -61,7 +62,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
       const task = new Task({
         taskId: taskFromPrisma.task_id,
         taskName: taskFromPrisma.name,
-        taskStatus: taskFromPrisma.status as STATUS,
+        taskStatus: taskFromPrisma.status as TASK_STATUS,
         taskDescription: taskFromPrisma.description,
         taskFinishDate: taskFromPrisma.finish_date,
         taskCreatedAt: taskFromPrisma.created_at,
@@ -114,7 +115,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
         return new Task({
           taskId: task.task_id,
           taskName: task.name,
-          taskStatus: task.status as STATUS,
+          taskStatus: task.status as TASK_STATUS,
           taskDescription: task.description,
           taskFinishDate: task.finish_date,
           taskCreatedAt: task.created_at,
