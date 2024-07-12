@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { UnprocessableEntity } from "../../../shared/helpers/http/http_codes";
-import { EntityError } from "../../../shared/helpers/errors/domain_errors";
-import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
-import { UpdateTaskStatusUsecase } from "./update_task_status_usecase";
 import { TASK_STATUS } from "../../../shared/domain/enums/task_status_enum";
+import { EntityError } from "../../../shared/helpers/errors/domain_errors";
+import { Forbidden, InternalServerError, ParameterError, UnprocessableEntity } from "../../../shared/helpers/http/http_codes";
+import { UpdateTaskStatusUsecase } from "./update_task_status_usecase";
 
 export class updateTaskStatusController {
     constructor(private updateTaskStatusUseCase: UpdateTaskStatusUsecase ) {
@@ -21,7 +20,7 @@ export class updateTaskStatusController {
                 throw new UnprocessableEntity("Invalid status");
             }
 
-            if (Object.values(TASK_STATUS).includes(status)) {
+            if (!Object.values(TASK_STATUS).includes(status)) {
                 throw new UnprocessableEntity("Invalid status")
             }
 
