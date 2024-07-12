@@ -6,11 +6,19 @@ export class UpdateTaskStatusUsecase {
     constructor(private repo: ITaskRepository) {}
 
     async execute(id: number, status: TASK_STATUS): Promise<boolean> {
+       
+       if (!id) {
+              throw new EntityError("Invalid task id");
+        }
+
+        if (!Object.values(TASK_STATUS).includes(status)) {
+            throw new EntityError("Invalid status");
+        }
+       
         const task = await this.repo.getTaskById(id);
 
         if (!task) {
             throw new EntityError("Task");
-            return false;
         }
 
         task.setTaskStatus(status);
