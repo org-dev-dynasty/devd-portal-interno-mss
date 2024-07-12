@@ -3,6 +3,7 @@ import { TASK_STATUS } from "../../../shared/domain/enums/task_status_enum";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { Forbidden, InternalServerError, ParameterError, UnprocessableEntity } from "../../../shared/helpers/http/http_codes";
 import { UpdateTaskStatusUsecase } from "./update_task_status_usecase";
+import { UpdateTaskStatusViewmodel } from "./update_task_status_viewmodel";
 
 export class updateTaskStatusController {
     constructor(private updateTaskStatusUseCase: UpdateTaskStatusUsecase ) {
@@ -30,7 +31,8 @@ export class updateTaskStatusController {
             );
 
             if (result) {
-                return res.status(200).json({ message: "Task atualizada com sucesso" });
+                const viewModel = new UpdateTaskStatusViewmodel("Task atualizada com sucesso");
+                return res.status(200).json(viewModel);
             }
             
         }
