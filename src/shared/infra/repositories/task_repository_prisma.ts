@@ -56,7 +56,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
         },
       });
       if (!taskFromPrisma) {
-        throw new Error("Tarefa não encontrada.");
+        throw new UnprocessableEntity("Tarefa não encontrada.");
       }
       const task = new Task({
         taskId: taskFromPrisma.task_id,
@@ -167,4 +167,18 @@ export class TaskRepositoryPrisma implements ITaskRepository {
       throw new Error("Erro ao atualizar tarefa no banco de dados.");
     }
   }
+
+  async deleteTask(taskId: number): Promise<void> {
+    try {
+      await prisma.task.delete({
+        where: {
+          task_id: taskId,
+        },
+      });
+    } catch (error: any) {
+      console.error("Erro ao deletar tarefa:", error);
+      throw new Error("Erro ao deletar tarefa no banco de dados.");
+    }
+  }
 }
+

@@ -5,7 +5,9 @@ import CreateProjectPresenter from "../modules/create_project/app/create_project
 import CreateTaskPresenter from "../modules/create_task/app/create_task_presenter";
 import CreateUserPresenter from "../modules/create_user/app/create_user_presenter";
 import DeleteProjectPresenter from "../modules/delete-project/app/delete-project_presenter";
+import DeleteTaskPresenter from "../modules/delete_task/app/delete_task_presenter";
 import GetAllProjectPresenter from "../modules/get_all_projects/app/get_all_projects_presenter";
+import GetAllTasksByProjectPresenter from "../modules/get_all_tasks_by_project/app/get_all_tasks_by_project_presenter";
 import GetAllUsersPresenter from "../modules/get_all_user/app/get_all_users_presenter";
 import GetProjectByIdPresenter from "../modules/get_project_by_id/app/get_project_by_id_presenter";
 import GetTaskByIdPresenter from "../modules/get_task_by_id/app/get_task_by_id_presenter";
@@ -14,7 +16,6 @@ import UpdateProjectPresenter from "../modules/update_project_by_id/app/update_p
 import UpdateProjectStatusPresenter from "../modules/update_project_status/app/update_project_status_presenter";
 import UpdateTaskStatusPresenter from "../modules/update_task_status/app/update_task_status_presenter";
 import UpdateUserStatusPresenter from "../modules/update_user_status/app/update_user_status_presenter";
-import GetAllTasksByProjectPresenter from "../modules/get_all_tasks_by_project/app/get_all_tasks_by_project_presenter";
 
 const routes = (app: Express) => {
   app
@@ -48,6 +49,7 @@ const routes = (app: Express) => {
   app.use("/api", CreateTaskPresenter);
   app.use("/api", GetTaskByIdPresenter);
   app.use("/api", GetAllTasksByProjectPresenter);
+  app.use("/api", DeleteTaskPresenter);
 };
 
 export default routes;

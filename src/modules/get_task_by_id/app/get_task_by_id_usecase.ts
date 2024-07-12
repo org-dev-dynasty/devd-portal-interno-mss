@@ -1,6 +1,7 @@
 import { Task } from "../../../shared/domain/entities/task";
 import { ITaskRepository } from "../../../shared/domain/repositories/task_repository_interface";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
+import { UnprocessableEntity } from "../../../shared/helpers/http/http_codes";
 
 export class GetTaskByIdUseCase {
   constructor(private readonly taskRepository: ITaskRepository) {}
@@ -13,7 +14,7 @@ export class GetTaskByIdUseCase {
       }
       return task;
     } catch (error) {
-      throw new Error("Task not found");
+      throw new UnprocessableEntity("Task not found");
     }
   }
 }

@@ -1,32 +1,41 @@
 import { Request, Response } from "express";
-import { InvalidParameter, InvalidRequest, MissingParameters } from "../../../shared/helpers/errors/controller_errors";
+import {
+    InvalidParameter,
+    InvalidRequest,
+    MissingParameters,
+} from "../../../shared/helpers/errors/controller_errors";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 import { NoItemsFound } from "../../../shared/helpers/errors/usecase_errors";
-import { BadRequest, Forbidden, InternalServerError, ParameterError, UnprocessableEntity } from "../../../shared/helpers/http/http_codes";
-import { GetTaskByIdUseCase } from "./get_task_by_id_usecase";
-import { GetTaskByIdViewmodel } from "./get_task_by_id_viewmodel";
+import {
+    BadRequest,
+    Forbidden,
+    InternalServerError,
+    ParameterError,
+    UnprocessableEntity,
+} from "../../../shared/helpers/http/http_codes";
+import { DeleteTaskUseCase } from "./delete_task_usecase";
+import { DeleteTaskViewModel } from "./delete_task_viewmodel";
 
-export class GetTaskByIdController {
-    constructor(private getTaskByIdUsecase: GetTaskByIdUseCase) {}
-
+export class DeleteTaskController {
+  constructor(private usecase: DeleteTaskUseCase) {}
   async handle(req: Request, res: Response) {
     try {
-      const taskId: number = Number(req.params.taskId);
+      const userAccess = req.user?.access;
 
+      if (!userAccess?.includes("BTN-DELETE-TASK")) {
+        throw new Forbidden(
+          "You do not have permission to access this feature"
+        );
+      }
+      const taskId  = Number(req.params.id);
       if (!taskId) {
-        throw new MissingParameters("Invalid task id");
+        throw new MissingParameters("task id ");
       }
 
-      const task = await this.getTaskByIdUsecase.execute(taskId);
-
-      if (!task) {
-        return res.status(422).json({ error: "Task not found" });
-      }
-
-      const taskViewModel = new GetTaskByIdViewmodel(task);
-
-      return res.status(200).json(taskViewModel);
-    } catch (error: any) {
+      await this.usecase.execute(Number(taskId));
+      const viewModel = new DeleteTaskViewModel("Task deleted successfully.");
+      res.status(200).send(viewModel);
+    } catch (error) {
       if (error instanceof InvalidRequest) {
         return new BadRequest(error.message).send(res);
       }
@@ -48,7 +57,7 @@ export class GetTaskByIdController {
       if (error instanceof MissingParameters) {
         return new ParameterError(error.message).send(res);
       }
-      return new InternalServerError('Internal Server Error').send(res);
+      return new InternalServerError("Internal Server Error").send(res);
     }
   }
 }
