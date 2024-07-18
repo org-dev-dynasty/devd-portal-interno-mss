@@ -14,6 +14,7 @@ import GetTaskByIdPresenter from "../modules/get_task_by_id/app/get_task_by_id_p
 import GetUserByIdPresenter from "../modules/get_user_by_id/app/get_user_by_id_presenter";
 import UpdateProjectPresenter from "../modules/update_project_by_id/app/update_project_presenter";
 import UpdateProjectStatusPresenter from "../modules/update_project_status/app/update_project_status_presenter";
+import UpdateTaskPresenter from "../modules/update_task/app/update_task_presenter";
 import UpdateTaskStatusPresenter from "../modules/update_task_status/app/update_task_status_presenter";
 import UpdateUserStatusPresenter from "../modules/update_user_status/app/update_user_status_presenter";
 
@@ -50,6 +51,7 @@ const routes = (app: Express) => {
   app.use("/api", GetTaskByIdPresenter);
   app.use("/api", GetAllTasksByProjectPresenter);
   app.use("/api", DeleteTaskPresenter);
+  app.use("/api", UpdateTaskPresenter);
 };
 
 export default routes;
