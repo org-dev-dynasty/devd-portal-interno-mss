@@ -23,7 +23,7 @@ export class UpdateTaskStatusUsecase {
 
         task.setTaskStatus(status);
 
-        await this.repo.updateTask(task);
+        await this.repo.updateTaskStatus(status, id);
         return true;
     }
 }
