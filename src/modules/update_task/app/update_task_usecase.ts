@@ -1,52 +1,50 @@
-import { Task } from "@prisma/client";
-import { TASK_STATUS } from "../../../shared/domain/enums/task_status_enum";
+import { Task } from "../../../shared/domain/entities/task";
 import { ITaskRepository } from "../../../shared/domain/repositories/task_repository_interface";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
 
-export class UpdateTask {
+export class UpdateTaskUsecase {
   constructor(private repo: ITaskRepository) {}
 
   async execute(
-    id: number,
-    name: string,
-    status: TASK_STATUS,
-    description: string,
-    finish_date: Date,
+      id: number,
+      data: Partial<Task>,
+  
+    ): Promise<Partial<Task>> {
+      if (!id) {
+        throw new EntityError("Invalid task id");
+      }
+  
+      const task = await this.repo.getTaskById(id);
+  
+      if (!task) {
+        throw new EntityError("Task");
+      }
+      // let update_data: any = {};
+  
+      // if (data.name !== undefined) {
+      //   if (Task.isValidName(data.name)) {
+      //   update_data["name"] = data.name;
+      //   }
+      // }
+  
+      // if (data.status !== undefined) {
+      //   update_data["status"] = data.status;
+      // }
+  
+      // if (data.description !== undefined) {
+      //   update_data["description"] = data.description;
+      // }
+  
+      // if (data.finish_date !== undefined) {
+      //   update_data["finish_date"] = data.finish_date;
+      // }
 
-  ): Promise<Task> {
-    if (!id) {
-      throw new EntityError("Invalid task id");
+
+
+
+  
+      const updatedTask = await this.repo.updateTask(id, data);
+      return updatedTask;
+  
     }
-
-    if (!Object.values(TASK_STATUS).includes(status)) {
-      throw new EntityError("Invalid status");
-    }
-
-    const task = await this.repo.getTaskById(id);
-
-    if (!task) {
-      throw new EntityError("Task");
-    }
-    const data: any = {};
-
-    if (name !== undefined) {
-      data.name = name;
-    }
-
-    if (status !== undefined) {
-      data.status = status;
-    }
-
-    if (description !== undefined) {
-      data.description = description;
-    }
-
-    if (finish_date !== undefined) {
-      data.finish_date = finish_date;
-    }
-
-    const updatedTask = await this.repo.updateTask(id, data);
-    return updatedTask;
-
-  }
 }
