@@ -17,6 +17,7 @@ import UpdateProjectStatusPresenter from "../modules/update_project_status/app/u
 import UpdateTaskPresenter from "../modules/update_task/app/update_task_presenter";
 import UpdateTaskStatusPresenter from "../modules/update_task_status/app/update_task_status_presenter";
 import UpdateUserStatusPresenter from "../modules/update_user_status/app/update_user_status_presenter";
+import CreateCredentialPresenter  from "../modules/create_credential/app/create_credential_presenter";
 
 const routes = (app: Express) => {
   app
@@ -52,6 +53,11 @@ const routes = (app: Express) => {
   app.use("/api", GetAllTasksByProjectPresenter);
   app.use("/api", DeleteTaskPresenter);
   app.use("/api", UpdateTaskPresenter);
+
+  //credential routes
+  app.use("/api", CreateCredentialPresenter);
 };
+
+
 
 export default routes;
