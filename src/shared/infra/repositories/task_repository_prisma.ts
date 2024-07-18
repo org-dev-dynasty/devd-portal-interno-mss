@@ -74,25 +74,30 @@ export class TaskRepositoryPrisma implements ITaskRepository {
     }
   }
 
-
   async getAllTasksByProject(projectId: string): Promise<Task[]> {
     const tasks = await prisma.task.findMany({
       where: { project_id: projectId },
     });
 
-    return tasks.map(task => new Task({
-      taskId: task.task_id,
-      taskName: task.name,
-      taskStatus: task.status as TASK_STATUS,
-      taskDescription: task.description,
-      taskFinishDate: task.finish_date,
-      taskCreatedAt: task.created_at,
-      create_user_id: task.create_user_id,
-      project_id: task.project_id,
-    }));
+    return tasks.map(
+      (task) =>
+        new Task({
+          taskId: task.task_id,
+          taskName: task.name,
+          taskStatus: task.status as TASK_STATUS,
+          taskDescription: task.description,
+          taskFinishDate: task.finish_date,
+          taskCreatedAt: task.created_at,
+          create_user_id: task.create_user_id,
+          project_id: task.project_id,
+        })
+    );
   }
 
-  async isUserParticipantOfProject(userId: string, projectId: string): Promise<boolean> {
+  async isUserParticipantOfProject(
+    userId: string,
+    projectId: string
+  ): Promise<boolean> {
     const participant = await prisma.participant.findFirst({
       where: {
         user_id: userId,
@@ -102,54 +107,15 @@ export class TaskRepositoryPrisma implements ITaskRepository {
 
     return !!participant;
   }
-  
-  async updateTask(taskProps: TaskProps): Promise<Task> {
+
+  async updateTask(id: number, data: Partial<Task>): Promise<Task> {
     try {
-      const data: any = {};
-
-    if (taskProps.taskName !== undefined) {
-      data.name = taskProps.taskName;
-    }
-
-    if (taskProps.taskStatus !== undefined) {
-      data.status = taskProps.taskStatus;
-    }
-
-    if (taskProps.taskDescription !== undefined) {
-      data.description = taskProps.taskDescription;
-    }
-
-    if (taskProps.taskFinishDate !== undefined) {
-      data.finish_date = taskProps.taskFinishDate;
-    }
-
-    if (taskProps.taskCreatedAt !== undefined) {
-      data.created_at = taskProps.taskCreatedAt;
-    }
-
-    if (taskProps.project_id !== undefined) {
-      data.project = {
-        connect: {
-          project_id: taskProps.project_id,
+      const updatedTaskFromPrisma = await prisma.task.update({
+        where: {
+          task_id: id,
         },
-      };
-    }
-
-    if (taskProps.create_user_id !== undefined) {
-      data.create_user = {
-        connect: {
-          user_id: taskProps.create_user_id,
-        },
-      };
-    }
-
-    const updatedTaskFromPrisma = await prisma.task.update({
-      where: {
-        task_id: taskProps.taskId,
-      },
-      data,
-    });
-
+        data,
+      });
 
       const updatedTask = new Task({
         taskId: updatedTaskFromPrisma.task_id,
@@ -159,7 +125,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
         taskFinishDate: updatedTaskFromPrisma.finish_date,
         taskCreatedAt: updatedTaskFromPrisma.created_at,
         create_user_id: updatedTaskFromPrisma.create_user_id,
-        project_id: updatedTaskFromPrisma.project_id
+        project_id: updatedTaskFromPrisma.project_id,
       });
       return updatedTask;
     } catch (error: any) {
@@ -180,5 +146,32 @@ export class TaskRepositoryPrisma implements ITaskRepository {
       throw new Error("Erro ao deletar tarefa no banco de dados.");
     }
   }
-}
 
+  async updateTaskStatus(status: string, taskId: number): Promise<Task> {
+    try {
+      const updatedTaskStatusFromPrisma = await prisma.task.update({
+        where: {
+          task_id: taskId,
+        },
+        data: {
+          status: status,
+        },
+      });
+
+      const updatedTaskStatus = new Task({
+        taskId: updatedTaskStatusFromPrisma.task_id,
+        taskName: updatedTaskStatusFromPrisma.name,
+        taskStatus: updatedTaskStatusFromPrisma.status as TASK_STATUS,
+        taskDescription: updatedTaskStatusFromPrisma.description,
+        taskFinishDate: updatedTaskStatusFromPrisma.finish_date,
+        taskCreatedAt: updatedTaskStatusFromPrisma.created_at,
+        create_user_id: updatedTaskStatusFromPrisma.create_user_id,
+        project_id: updatedTaskStatusFromPrisma.project_id,
+      });
+      return updatedTaskStatus;
+    } catch (error: any) {
+      console.error("Erro ao atualizar status da tarefa:", error);
+      throw new Error("Erro ao atualizar status da tarefa no banco de dados.");
+    }
+  }
+}
