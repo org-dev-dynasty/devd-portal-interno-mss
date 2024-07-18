@@ -1,10 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Task, TaskProps } from "../../../shared/domain/entities/task";
-import { STATUS } from "../../domain/enums/status_enum";
-import { ITaskRepository } from "../../domain/repositories/task_repository_interface";
-import { MissingParameters } from "../../helpers/errors/controller_errors";
-import { UnprocessableEntity } from "../../helpers/http/http_codes";
 import { TASK_STATUS } from "../../domain/enums/task_status_enum";
+import { ITaskRepository } from "../../domain/repositories/task_repository_interface";
+import { UnprocessableEntity } from "../../helpers/http/http_codes";
 
 const prisma = new PrismaClient();
 
@@ -108,7 +106,7 @@ export class TaskRepositoryPrisma implements ITaskRepository {
     return !!participant;
   }
 
-  async updateTask(id: number, data: Partial<Task>): Promise<Task> {
+  async updateTask(id: number, data: Partial<Task>): Promise<Partial<Task>> {
     try {
       const updatedTaskFromPrisma = await prisma.task.update({
         where: {
