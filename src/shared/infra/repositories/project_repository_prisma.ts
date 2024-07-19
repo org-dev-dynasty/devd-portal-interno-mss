@@ -3,6 +3,7 @@ import { Project } from "../../domain/entities/project";
 import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
 import { STATUS, toEnum } from "../../domain/enums/status_enum";
 import { UnprocessableEntity } from "../../helpers/http/http_codes";
+import { ParticipantDTO } from "../dto/participant_dto";
 
 const prisma = new PrismaClient();
 
@@ -159,4 +160,25 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
       throw new Error("Erro ao atualizar status do projeto no banco de dados.");
     }
   }
+
+  async createParticipant(projectId: string, userId: string): Promise<ParticipantDTO> {
+    try {
+      const participant = await prisma.participant.create({
+        data: {
+          project_id: projectId,
+          user_id: userId,
+        },
+      });
+      return new ParticipantDTO(
+        participant.project_id,
+        participant.user_id,
+        participant.participant_id
+      )
+        
+    } catch (error: any) {
+      console.error("Erro ao adicionar participante ao projeto:", error);
+      throw new Error("Erro ao adicionar participante ao projeto no banco de dados.");
+    }
+  }
+
 }
