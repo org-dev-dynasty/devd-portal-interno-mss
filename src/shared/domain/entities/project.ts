@@ -2,67 +2,66 @@ import { EntityError } from "../../helpers/errors/domain_errors";
 import { STATUS } from "../enums/status_enum";
 
 
-export interface ProjectProps {
-    projectId?: string;
-    projectName: string;
-    projectStatus: STATUS;
-    projectDescription: string;
-}
-
 export class Project {
-    constructor(public props: ProjectProps) {
-        this.validateProps(props);
-    }
+    private project_id?: string;
+    private project_name: string;
+    private project_status: STATUS;
+    private project_description: string;
 
-    private validateProps(props: ProjectProps) {
-        if (!Project.isValidName(props.projectName)) {
+    constructor(projectName: string, projectDescription: string, projectStatus: STATUS ) {
+        if (!Project.isValidName(projectName)) {
             throw new EntityError("Invalid project name");
         }
 
-        if (!Project.isValidStatus(props.projectStatus)) {
+        if (!Project.isValidStatus(projectStatus)) {
             throw new EntityError("Invalid project status");
         }
 
-        if (props.projectDescription && props.projectDescription.trim().length === 0) {
+        if (projectDescription && projectDescription.trim().length === 0) {
             throw new EntityError("Invalid project description");
         }
+
+        this.project_name = projectName; 
+        this.project_status = projectStatus;
+        this.project_description = projectDescription;
     }
 
+
     get projectId(): string | undefined {
-        return this.props.projectId;
+        return this.project_id;
     }
 
     get projectName(): string {
-        return this.props.projectName;
+        return this.project_name;
     }
 
     get projectStatus(): STATUS {
-        return this.props.projectStatus;
+        return this.project_status;
     }
 
     get projectDescription(): string {
-        return this.props.projectDescription;
+        return this.project_description;
     }
 
     setProjectName(projectName: string): void {
         if (!Project.isValidName(projectName)) {
             throw new EntityError("Invalid project name");
         }
-        this.props.projectName = projectName;
+        this.project_name = projectName;
     }
 
     setProjectStatus(projectStatus: STATUS): void {
         if (!Project.isValidStatus(projectStatus)) {
             throw new EntityError("Invalid project status");
         }
-        this.props.projectStatus = projectStatus;
+        this.project_status = projectStatus;
     }
 
     serProjectDescription(projectDescription: string): void { 
         if (projectDescription && projectDescription.trim().length === 0) {
             throw new EntityError("Invalid project description");
         }
-        this.props.projectDescription = projectDescription
+        this.project_description = projectDescription
     }  
 
     static isValidName(projectname: string): boolean {
