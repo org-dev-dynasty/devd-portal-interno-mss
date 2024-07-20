@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 
 import { GetAllProjectsUsecase } from "./get_all_projects_usecase";
-import { UserFromToken } from "../../../shared/middlewares/jwt_middleware";
 import { GetAllProjectsViewmodel } from "./get_all_projects_viewmodel";
 import {
   ForbiddenAction,
@@ -15,7 +14,6 @@ export class GetAllProjectsController {
 
   async handle(req: Request, res: Response) {
     const userRole = req.user?.role;
-
     if (userRole !== "ADMIN") {
       throw new Forbidden("You do not have permission to access this feature");
     }

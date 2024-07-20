@@ -20,15 +20,18 @@ export class DeleteProjectController {
   constructor(private usecase: DeleteProjectUsecase) {}
 
   async handle(req: Request, res: Response) {
-    const userAccess = req.user?.access;
+    const userRole = req.user?.role;
+    if (userRole !== "ADMIN") {
+      throw new Forbidden("You do not have permission to access this feature");
+    }
 
+    const userAccess = req.user?.access;
     if (!userAccess?.includes("BTN-DELETE-PROJECT")) {
       throw new Forbidden("You do not have permission to access this feature");
     }
 
     try {
       const projectId: string = req.params.projectId;
-
       if (!req.params) {
         throw new MissingParameters("Missing parameters.");
       }

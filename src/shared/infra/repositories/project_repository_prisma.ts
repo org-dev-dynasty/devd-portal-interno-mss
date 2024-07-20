@@ -8,21 +8,17 @@ import { ParticipantDTO } from "../dto/participant_dto";
 const prisma = new PrismaClient();
 
 export class ProjectRepositoryPrisma implements IProjectRepository {
-  async createProject(projectProps: Project): Promise<Project> {
+  async createProject(projectName: string, projectDescription: string, projectStatus: STATUS ): Promise<Project> {
     try {
       const createdProjectFromPrisma = await prisma.project.create({
         data: {
-          name: projectProps.projectName,
-          status: projectProps.projectStatus,
-          description: projectProps.projectDescription,
+          name: projectName,
+          status: projectStatus,
+          description: projectDescription,
         },
       });
 
-      const createdProject = new Project({
-        projectName: createdProjectFromPrisma.name,
-        projectStatus: toEnum(createdProjectFromPrisma.status),
-        projectDescription: createdProjectFromPrisma.description,
-      });
+      const createdProject = new Project(createdProjectFromPrisma.name, createdProjectFromPrisma.description, toEnum(createdProjectFromPrisma.status));
 
       return createdProject;
     } catch (error: any) {
@@ -39,11 +35,7 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
       const projectsFromPrisma = await prisma.project.findMany();
 
       const projects = projectsFromPrisma.map((project) => {
-        return new Project({
-          projectName: project.name,
-          projectStatus: toEnum(project.status),
-          projectDescription: project.description,
-        });
+        return new Project(project.name, project.description, toEnum(project.status));
       });
 
       console.log("Projetos encontrados:", projects);
@@ -72,12 +64,7 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
         return undefined;
       }
 
-      const project = new Project({
-        projectId: projectFromPrisma.project_id,
-        projectName: projectFromPrisma.name,
-        projectStatus: toEnum(projectFromPrisma.status),
-        projectDescription: projectFromPrisma.description,
-      });
+      const project = new Project(projectFromPrisma.name, projectFromPrisma.description, toEnum(projectFromPrisma.status));
       console.log("Projeto encontrado:", project);
       return project || null;
     } catch (error: any) {
@@ -99,11 +86,7 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
         },
       });
 
-      const updatedProject = new Project({
-        projectName: updatedProjectFromPrisma.name,
-        projectStatus: toEnum(updatedProjectFromPrisma.status),
-        projectDescription: updatedProjectFromPrisma.description,
-      });
+      const updatedProject = new Project(updatedProjectFromPrisma.name, updatedProjectFromPrisma.description, toEnum(updatedProjectFromPrisma.status));
 
       return updatedProject;
     } catch (error: any) {
@@ -138,7 +121,7 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
 
   async updateProjectStatus(projectId: string, projectStatus: STATUS): Promise<Project> {
     try {
-      const upsateProjectStatusFromPrisma = await prisma.project.update({
+      const updateProjectStatusFromPrisma = await prisma.project.update({
         where: {
           project_id: projectId,
         },
@@ -147,12 +130,7 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
         },
       });
 
-      const updatedProject = new Project({
-        projectId: upsateProjectStatusFromPrisma.project_id,
-        projectName: upsateProjectStatusFromPrisma.name,
-        projectStatus: toEnum(upsateProjectStatusFromPrisma.status),
-        projectDescription: upsateProjectStatusFromPrisma.description,
-      });
+      const updatedProject = new Project(updateProjectStatusFromPrisma.name, updateProjectStatusFromPrisma.description, toEnum(updateProjectStatusFromPrisma.status));
 
       return updatedProject;
     } catch (error: any) {
