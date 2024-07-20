@@ -18,6 +18,7 @@ import UpdateTaskPresenter from "../modules/update_task/app/update_task_presente
 import UpdateTaskStatusPresenter from "../modules/update_task_status/app/update_task_status_presenter";
 import UpdateUserStatusPresenter from "../modules/update_user_status/app/update_user_status_presenter";
 import CreateCredentialPresenter  from "../modules/create_credential/app/create_credential_presenter";
+import GetAllCredentialsPresenter  from "../modules/get_all_credentials/app/get_all_credentials_presenter";
 
 const routes = (app: Express) => {
   app
@@ -56,6 +57,7 @@ const routes = (app: Express) => {
 
   //credential routes
   app.use("/api", CreateCredentialPresenter);
+  app.use("/api", GetAllCredentialsPresenter);
 };
 
 

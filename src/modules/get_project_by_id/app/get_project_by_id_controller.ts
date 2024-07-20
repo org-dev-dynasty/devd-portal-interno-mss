@@ -18,10 +18,13 @@ export class GetProjectByIdController {
   constructor(private usecase: getProjectByIdUsecase) {}
 
   async handle(req: Request, res: Response) {
-    
     try {
-      const projectId: string = req.params.projectId;
+      const userProject = req.user?.projects;
+      if (!userProject?.includes(req.params.projectId)) { 
+        throw new Forbidden("You don't have permission to access this project");
+      }
 
+      const projectId: string = req.params.projectId;
       const project = await this.usecase.execute(projectId);
 
       const viewModel = new GetProjectByIdViewModel(project);

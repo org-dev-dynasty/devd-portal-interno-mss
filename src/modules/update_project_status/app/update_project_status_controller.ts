@@ -12,6 +12,11 @@ export class UpdateProjectStatusController {
 
     async handle(req: Request, res: Response): Promise<Response> {        
         try {
+            const userAccess = req.user?.access;
+            if (!userAccess?.includes("BTN-UPDATE-PROJECT-STATUS")) { 
+              throw new Forbidden("You do not have permission to access this feature");
+            }    
+
             const { project_id, status } = req.body;
             if (!project_id) {
                 throw new MissingParameters("Project ID")

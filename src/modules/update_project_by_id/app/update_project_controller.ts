@@ -13,32 +13,34 @@ import {
   ParameterError,
 } from "../../../shared/helpers/http/http_codes";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
-import { Project, ProjectProps } from "../../../shared/domain/entities/project";
+import { Project } from "../../../shared/domain/entities/project";
 
 export class UpdateProjectController {
   constructor(private usecase: UpdateProjectUsecase) {}
 
   async handle(req: Request, res: Response): Promise<Response> {
     try {
-      const project_id = req.params.project_id;
-      console.log("PROJECT ID VINDO DOS PARAMS " + project_id);
-      const { projectName, projectDescription, projectStatus } = req.body;
-      const errors = [];
-
-      if (!project_id) {
-        errors.push("projectId");
+      const userAccess = req.user?.access;
+      if (!userAccess?.includes("BTN-UPDATE-PROJECT")) { 
+        throw new Forbidden("You do not have permission to access this feature");
       }
 
+      const project_id = req.params.project_id;
+      if (!project_id) { 
+        throw new MissingParameters("Project ID"); 
+      }
+
+      const { projectName, projectDescription, projectStatus } = req.body;
       if (!projectName) {
-        errors.push(new MissingParameters("Project Name"));
+        throw new MissingParameters("Project Name");
       }
 
       if (!projectDescription) {
-        errors.push(new MissingParameters("Project Description"));
+        throw new MissingParameters("Project Description");
       }
 
       if (!projectStatus) {
-        errors.push(new MissingParameters("Project Status"));
+        throw new MissingParameters("Project Status");
       }
 
       await this.usecase.execute(
@@ -47,13 +49,7 @@ export class UpdateProjectController {
         projectDescription,
         projectStatus
       );
-      const projectProps: ProjectProps = {
-        projectId: project_id,
-        projectName,
-        projectDescription,
-        projectStatus,
-      };
-      const updatedProject = new Project(projectProps);
+      const updatedProject = new Project(projectName, projectDescription, projectStatus);
       return res.status(200).json(new UpdateProjectViewModel(updatedProject));
     } catch (error: any) {
       if (error instanceof InvalidRequest) {
