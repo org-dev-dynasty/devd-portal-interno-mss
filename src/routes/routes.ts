@@ -1,6 +1,8 @@
 const cookieParser = require("cookie-parser");
 import { Express, Request, Response } from "express";
 import AuthUserPresenter from "../modules/auth_user/app/auth_user_presenter";
+import CreateCredentialPresenter from "../modules/create_credential/app/create_credential_presenter";
+import CreateParticipantPresenter from "../modules/create_participant/app/create_participant_presenter";
 import CreateProjectPresenter from "../modules/create_project/app/create_project_presenter";
 import CreateTaskPresenter from "../modules/create_task/app/create_task_presenter";
 import CreateUserPresenter from "../modules/create_user/app/create_user_presenter";
@@ -44,6 +46,9 @@ const routes = (app: Express) => {
   app.use("/api", UpdateProjectPresenter);
   app.use("/api", DeleteProjectPresenter);
   app.use("/api", UpdateProjectStatusPresenter);
+  
+  // participant routes
+  app.use("/api", CreateParticipantPresenter);
 
   // task routes
   app.use("/api", CreateTaskPresenter)
@@ -59,6 +64,7 @@ const routes = (app: Express) => {
   app.use("/api", CreateCredentialPresenter);
   app.use("/api", GetAllCredentialsPresenter);
 };
+
 
 
 
