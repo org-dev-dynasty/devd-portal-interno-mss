@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Project } from "../../domain/entities/project";
-import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
 import { STATUS, toEnum } from "../../domain/enums/status_enum";
+import { IProjectRepository } from "../../domain/repositories/project_repository_interface";
 import { UnprocessableEntity } from "../../helpers/http/http_codes";
 import { ParticipantDTO } from "../dto/participant_dto";
+import { ProjectParticipantDTO } from "../dto/project_participant_dto";
 
 const prisma = new PrismaClient();
 
@@ -159,4 +160,29 @@ export class ProjectRepositoryPrisma implements IProjectRepository {
     }
   }
 
+  async getParticipantByProject(project_id: string): Promise<ProjectParticipantDTO[]> {
+    try {
+      const participants = await prisma.participant.findMany({
+        where: {
+          project_id: project_id,
+        },
+        include:{
+          user: true,
+        }
+      });
+
+      const participantDTOs = participants.map(participant => {
+        return new ProjectParticipantDTO(
+          participant.project_id,
+          participant.user_id,  // Supondo que o campo id exista dentro do objeto user
+          participant.participant_id,
+          participant.user.name // Supondo que o campo name exista dentro do objeto user
+        );
+      });
+      return participantDTOs;
+    } catch (error: any) {
+      console.error("Erro ao buscar participantes por projeto:", error);
+      throw new Error("Erro ao buscar participantes por projeto no banco de dados.");
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { GetAllTasksByProjectUsecase } from "./get_all_tasks_by_project_usecase";
 import { EntityError } from "../../../shared/helpers/errors/domain_errors";
-import { BadRequest, Forbidden, InternalServerError, ParameterError } from "../../../shared/helpers/http/http_codes";
+import { BadRequest, Forbidden, InternalServerError, OK, ParameterError } from "../../../shared/helpers/http/http_codes";
 import { GetAllTasksByProjectViewmodel } from "./get_all_tasks_by_project_viewmodel";
 import { InvalidParameter, InvalidRequest, MissingParameters } from "../../../shared/helpers/errors/controller_errors";
 
@@ -34,7 +34,8 @@ export class GetAllTasksByProjectController {
         (task) => new GetAllTasksByProjectViewmodel(task)
       );
 
-      return res.status(200).json({ tasks: viewmodel, message: "All tasks has been found" });
+      // return res.status(200).json({ tasks: viewmodel, message: "All tasks has been found" });
+      return new OK({tasks: viewmodel}, "All tasks has been found");
     } catch (error: any) {
       if (error instanceof InvalidRequest) {
         return new BadRequest(error.message).send(res);
