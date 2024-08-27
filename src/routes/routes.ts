@@ -8,9 +8,11 @@ import CreateTaskPresenter from "../modules/create_task/app/create_task_presente
 import CreateUserPresenter from "../modules/create_user/app/create_user_presenter";
 import DeleteProjectPresenter from "../modules/delete-project/app/delete-project_presenter";
 import DeleteTaskPresenter from "../modules/delete_task/app/delete_task_presenter";
+import GetAllCredentialsPresenter from "../modules/get_all_credentials/app/get_all_credentials_presenter";
 import GetAllProjectPresenter from "../modules/get_all_projects/app/get_all_projects_presenter";
 import GetAllTasksByProjectPresenter from "../modules/get_all_tasks_by_project/app/get_all_tasks_by_project_presenter";
 import GetAllUsersPresenter from "../modules/get_all_user/app/get_all_users_presenter";
+import GetParticipantByProjectPresenter from "../modules/get_participant_by_project/app/get_participant_by_project_presenter";
 import GetProjectByIdPresenter from "../modules/get_project_by_id/app/get_project_by_id_presenter";
 import GetTaskByIdPresenter from "../modules/get_task_by_id/app/get_task_by_id_presenter";
 import GetUserByIdPresenter from "../modules/get_user_by_id/app/get_user_by_id_presenter";
@@ -19,8 +21,6 @@ import UpdateProjectStatusPresenter from "../modules/update_project_status/app/u
 import UpdateTaskPresenter from "../modules/update_task/app/update_task_presenter";
 import UpdateTaskStatusPresenter from "../modules/update_task_status/app/update_task_status_presenter";
 import UpdateUserStatusPresenter from "../modules/update_user_status/app/update_user_status_presenter";
-import CreateCredentialPresenter  from "../modules/create_credential/app/create_credential_presenter";
-import GetAllCredentialsPresenter  from "../modules/get_all_credentials/app/get_all_credentials_presenter";
 
 const routes = (app: Express) => {
   app
@@ -49,7 +49,7 @@ const routes = (app: Express) => {
   
   // participant routes
   app.use("/api", CreateParticipantPresenter);
-
+  app.use("/api", GetParticipantByProjectPresenter);
   // task routes
   app.use("/api", CreateTaskPresenter)
   app.use("/api",GetTaskByIdPresenter)
